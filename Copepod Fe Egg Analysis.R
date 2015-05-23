@@ -351,3 +351,31 @@ abline(a=13.037, b=46.100)
 
 
 # maybe use ricker, gompertz, logistic (use change in treatment instead of time)
+
+# gompertz attempt:
+gomp <- function(a, b, c, x)
+{
+  a * exp(b * exp(c * x))
+}
+
+# find start values by looking at what function looks like w/ diff params
+# can't use treatments as numeric values or categorical values. I guess I can just assign them
+# as values from 1 to 7
+plot(as.numeric(colnames(both.run.sums)), gomp(a=1, b=-4, c=-1, x=as.numeric(colnames(both.run.sums))))  # looks good
+
+plot(x, gomp(a=40, b=-1, c=-1, x=x))  # these are probably good starting values.
+# need to use a=40 so that the y-axis values are equivalent to the mean egg counts.
+
+plot(rev(treat.means) ~ c(1:7))  # plotting it this way flips the plot. need to use rev()
+
+fit.nls <- nls(rev(treat.means) ~ gomp(a, b, c, x=c(1:7)), 
+               start=list(a=40, b=-1, c=-1))
+summary(fit.nls)
+model <- predict(fit.nls)  # this will be the fitted line
+
+#============================================
+# plotting best fit line using Gompertz Model
+#============================================
+plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+lines(colnames(both.run.sums), rev(model), col="red", lwd=3)
