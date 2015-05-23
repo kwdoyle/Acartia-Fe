@@ -373,9 +373,28 @@ fit.nls <- nls(rev(treat.means) ~ gomp(a, b, c, x=c(1:7)),
 summary(fit.nls)
 model <- predict(fit.nls)  # this will be the fitted line
 
+# should I try fitting the model while excluding the 0.7 treatment point?
 #============================================
 # plotting best fit line using Gompertz Model
 #============================================
 plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
 lines(colnames(both.run.sums), rev(model), col="red", lwd=3)
+
+
+
+# try to make x-axis a continum of ratio values
+r <- seq(0, 1, by=0.1)
+plot(r, gomp(a=40, b=-4, c=-5, x=r))  # try c=5 or 6; makes a flat line
+
+# make treatments numerical values
+Fe.ratios <- as.numeric(colnames(both.run.sums))
+treat.means
+
+# this fit looks pretty much the same as the previous one
+fit2 <- nls(treat.means ~ gomp(a, b, c, x=Fe.ratios),
+            start=list(a=40, b=-4, c=-5))
+model2 <- predict(fit2)
+plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+lines(Fe.ratios, model2)
