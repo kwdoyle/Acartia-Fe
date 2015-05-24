@@ -378,23 +378,82 @@ model <- predict(fit.nls)  # this will be the fitted line
 # plotting best fit line using Gompertz Model
 #============================================
 plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+     main="Mean of each treatment across all wells \n for both runs",
+     sub="fitting to 1:7 on x-axis", type="b", pch=16)
 lines(colnames(both.run.sums), rev(model), col="red", lwd=3)
 
 
 
 # try to make x-axis a continum of ratio values
 r <- seq(0, 1, by=0.1)
-plot(r, gomp(a=40, b=-4, c=-5, x=r))  # try c=5 or 6; makes a flat line
+plot(r, gomp(a=40, b=-3, c=-5, x=r))  # try c=5 or 6; makes a flat line
 
 # make treatments numerical values
 Fe.ratios <- as.numeric(colnames(both.run.sums))
 treat.means
 
 # this fit looks pretty much the same as the previous one
+# this one is fitting to actual Fe ratio values while the other is fitting to just 1:7
 fit2 <- nls(treat.means ~ gomp(a, b, c, x=Fe.ratios),
             start=list(a=40, b=-4, c=-5))
 model2 <- predict(fit2)
 plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
-lines(Fe.ratios, model2)
+     main="Mean of each treatment across all wells \n for both runs",
+     sub="fitting to numeric ratios", type="b", pch=16)
+lines(Fe.ratios, model2, col="red", lwd=3)
+
+# fit to a continum of ratio values
+# how does this give different results?
+predict(fit2, newdata=r)
+residuals(fit2)
+summary(fit2)
+
+
+
+### this isn't working ###
+# calculate CIs via bootstrap
+resid <- residuals(fit2)
+
+b.resid <- vector("list", 1000)
+Yi <- vector("list", 1000)
+b.gom <- matrix(nrow=7, ncol=1000)
+a <- c()
+b <- c()
+c <- c()
+for (i in 1:1000)
+{
+  # sample residuals
+  b.resid[[i]] <- sample(resid, replace=T)
+  # calculate new data sets. It's technically redundant to save each set of Yi though.
+  Yi[[i]] <- (fitted(fit2) + b.resid[[i]])
+  
+  # fit model to new data & collect parameter estimates
+  b.data <- Yi[[i]]
+  b.fit <- nls(b.data ~ gomp(a, b, c, x=Fe.ratios), start=list(a=40, b=-1.22, c=-3.12))
+  # calculating this won't work because starting vals aren't the same for each prediction
+  a <- c(a, coef(b.fit)[1])
+  b <- c(b, coef(b.fit)[2])
+  c <- c(c, coef(b.fit)[3])
+  
+  # calculate and store model predictions. each column contains the data from 
+  # each bootstrapped sample
+  b.gom[,i] <- gomp(a[i], b[i], c[i], Fe.ratios)  
+}
+
+# note: plot(days, gomp(1.2, -0.1, 0.1, days)*nmax) is the best-fit line
+
+
+
+# calculate CIs (quantile across row of b.gom = CI for each data point)
+b.CI <- matrix(nrow=172, ncol=2)
+for (i in 1:nrow(b.gom))
+{
+  b.CI[i,] <- quantile(b.gom[i,], c(0.025, 0.975))
+}
+
+
+
+
+## CIs using confint()?
+library(MASS)  # adds support for nls and glm
+confint(fit2, level=0.1)  # still gives error, but not with 10% CIs!!!
