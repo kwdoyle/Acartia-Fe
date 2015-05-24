@@ -408,52 +408,37 @@ predict(fit2, newdata=r)
 residuals(fit2)
 summary(fit2)
 
-
-
-### this isn't working ###
-# calculate CIs via bootstrap
-resid <- residuals(fit2)
-
-b.resid <- vector("list", 1000)
-Yi <- vector("list", 1000)
-b.gom <- matrix(nrow=7, ncol=1000)
-a <- c()
-b <- c()
-c <- c()
-for (i in 1:1000)
-{
-  # sample residuals
-  b.resid[[i]] <- sample(resid, replace=T)
-  # calculate new data sets. It's technically redundant to save each set of Yi though.
-  Yi[[i]] <- (fitted(fit2) + b.resid[[i]])
-  
-  # fit model to new data & collect parameter estimates
-  b.data <- Yi[[i]]
-  b.fit <- nls(b.data ~ gomp(a, b, c, x=Fe.ratios), start=list(a=40, b=-1.22, c=-3.12))
-  # calculating this won't work because starting vals aren't the same for each prediction
-  a <- c(a, coef(b.fit)[1])
-  b <- c(b, coef(b.fit)[2])
-  c <- c(c, coef(b.fit)[3])
-  
-  # calculate and store model predictions. each column contains the data from 
-  # each bootstrapped sample
-  b.gom[,i] <- gomp(a[i], b[i], c[i], Fe.ratios)  
-}
-
-# note: plot(days, gomp(1.2, -0.1, 0.1, days)*nmax) is the best-fit line
-
-
-
-# calculate CIs (quantile across row of b.gom = CI for each data point)
-b.CI <- matrix(nrow=172, ncol=2)
-for (i in 1:nrow(b.gom))
-{
-  b.CI[i,] <- quantile(b.gom[i,], c(0.025, 0.975))
-}
-
-
-
-
 ## CIs using confint()?
 library(MASS)  # adds support for nls and glm
 confint(fit2, level=0.1)  # still gives error, but not with 10% CIs!!!
+
+
+
+#============================================
+# plotting best fit line using Logistic Model
+#============================================
+logi <- function(B0, B1, x) {
+  1 / (1 + exp((-B0 + B1 * x)))
+}
+
+logi2 <- function(x) {
+  1 / (1 + exp((-x)))
+}
+plot(x, logi(0, -1, x))  # y-axis is probability?
+
+fit3 <- nls(treat.means ~ logi(B0, B1, x=Fe.ratios),
+            start=list(B0=0, B1=-0.1))
+
+
+
+#=======================================================
+# plotting best fit line using Linear with Plateau Model
+#=======================================================
+lrp <- function(x, a, b, tx) { 
+  ifelse(x > tx, a + b * tx, a + b * x)
+}
+
+plot(x, lrp(x=x, a=0, b=10, tx=5))
+# a = start of y-axis
+# b = incriment y-axis increases by
+# tx = y val at which plot levels off
