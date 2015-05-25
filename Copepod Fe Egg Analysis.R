@@ -308,7 +308,7 @@ plot(x, y)
 
 
 # model I want:
-y <- x * (something that makes x effectively 0 at a specific x value.)
+# y <- x * (something that makes x effectively 0 at a specific x value.)
 
 #==========================================================
 # using pdf about linear response stochastic plateau models
@@ -386,7 +386,7 @@ lines(colnames(both.run.sums), rev(model), col="red", lwd=3)
 
 # try to make x-axis a continum of ratio values
 r <- seq(0, 1, by=0.1)
-plot(r, gomp(a=40, b=-3, c=-5, x=r))  # try c=5 or 6; makes a flat line
+plot(r, gomp(a=40, b=-3, c=-5, x=r), ylim=c(0,60))  # try c=5 or 6; makes a flat line
 
 # make treatments numerical values
 Fe.ratios <- as.numeric(colnames(both.run.sums))
@@ -432,14 +432,31 @@ plot(new.ratios, new.vals, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
 lines(new.ratios, model3, col="red", lwd=3)
 
 
-
+#=====================================================================================
 #### also try fitting this model to the treatment means from both Run 1 and Run 2 ####
+#=====================================================================================
+# Run 1
+fit.run1 <- nls(treat.means.1 ~ gomp(a, b, c, x=Fe.ratios),
+               start=list(a=40, b=-4, c=-5))
+
+model.run1 <- predict(fit.run1)
+
+plot(Fe.ratios, treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for Run 1", type="b", pch=16)
+lines(Fe.ratios, model.run1, col="red", lwd=3)
 
 
-# insert that code here.
 
 
+# Run 2
+fit.run2 <- nls(treat.means.2 ~ gomp(a, b, c, x=Fe.ratios),
+              start=list(a=40, b=-4, c=-5))
 
+model.run2 <- predict(fit.run2)
+
+plot(Fe.ratios, treat.means.2, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for Run 2", type="b", pch=16)
+lines(Fe.ratios, model.run2, col="red", lwd=3)
 
 
 
@@ -467,9 +484,24 @@ fit3 <- nls(treat.means ~ logi(B0, B1, x=Fe.ratios),
 #=======================================================
 # plotting best fit line using Linear with Plateau Model
 #=======================================================
+# All these attemps give a 'singular gradient matrix' error. Is this due to the fact that
+# nls just can't fit the plateau part since there's no variability anymore once it plateaus?
+
 lrp <- function(x, a, b, tx) { 
   ifelse(x > tx, a + b * tx, a + b * x)
 }
+
+plot(Fe.ratios, lrp(Fe.ratios, 13, 46, 0.6))
+
+nls(treat.means ~ lrp(x=Fe.ratios, a, b, tx),
+    start=list(a=13, b=46, tx=0.6))
+
+plot(treat.means ~ lrp(x=Fe.ratios, a=13, b=46, tx=0.6))
+
+# what does this give me?
+gomp(a=44.2, b=-1.22, c=-3.12, x=Fe.ratios)
+plot(treat.means ~ gomp(a=44.2, b=-1.22, c=-3.12, x=Fe.ratios))
+
 
 plot(x, lrp(x=x, a=0, b=10, tx=5))
 plot(lrp(x=Fe.ratios, a=0, b=10, tx=0.6), treat.means)
@@ -505,3 +537,57 @@ plot(Fe.ratios, lrp(x=treat.means, a=0, b=1, tx=40))
 
 ### maybe this model is not worth it anyway, since it's not exactly "fitting" anything
 # it's just fitting a linear model until I tell it to stop and make a plateau ###
+
+
+# trying to re-create the lrp function to work like the equations in that paper
+B0 <- 0  # intercept here should be 0, ie, no egg production at 0 Fe
+B1 <- 46.1  # slope is w/e the rate of linear increase is before the plateau
+y <- B0 + B1*x
+y.max <- B0 + B1*x.max  # equation for plateau point, ie, ≈40 for my data
+y.max <- mean(treat.means[c(1:4)])  # using the last 4 points on the plateau
+x.max <- (y.max / B1) - (B0 / B1)  # rearrange to solve for x.max
+
+
+# new attempt with trying to make it plot just y.max
+# ...it is not successful.
+lrp2 <- function(x, a, b, tx, y.max) { 
+  ifelse(x > tx, y.max, a + b * x)
+}
+
+
+plot(treat.means ~ lrp2(x=Fe.ratios, a=13, b=46, tx=0.6, y.max=40))
+
+
+
+
+plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+abline(a=13.037, b=46.100)
+
+# plotting this works
+rev(lrp2(Fe.ratios, a=13.037, b=46.1, x.max=0.6, y.max=40))
+plot(Fe.ratios, lrp2(Fe.ratios, a=13.037, b=46.1, x.max=0.6, y.max=40), ylim=c(0,60))
+
+# try fitting it w/ nls
+fit4 <- nls(treat.means ~ lrp2(x=Fe.ratios, a, b, x.max, y.max),
+            start=list(a=13, b=46, x.max=0.6, y.max=40), trace=T)
+
+fit4 <- nls(treat.means ~ lrp2(x=Fe.ratios, a, b, x.max, y.max),
+            start=list(a=0, b=1, x.max=0.6, y.max=40), trace=T)
+# these have to be like this to work
+plot(lrp2(x=Fe.ratios, a=13, b=46, x.max=0.6, y.max=40) ~ treat.means)
+# ie, the lrp values are a function of the treatment means
+
+
+# do I have to flip this so it's computing y-values and not x-values?
+lrp3 <- function(y, a, b, x.max, y.max) { 
+  ifelse(y > y.max, x.max, a + b * x)
+}
+
+lrp3(treat.means, a=13, b=46, x.max=0.6, y.max=40)
+
+# how does this work?
+plot(treat.means ~ gomp(a=40, b=-4, c=-5, x=Fe.ratios), ylim=c(0,60))
+
+# this doesn't?
+lrp2(x=Fe.ratios, a=13, b=46, x.max=0.6, y.max=40)
