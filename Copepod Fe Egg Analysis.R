@@ -394,13 +394,15 @@ treat.means
 
 # this fit looks pretty much the same as the previous one
 # this one is fitting to actual Fe ratio values while the other is fitting to just 1:7
+#===================================================
 fit2 <- nls(treat.means ~ gomp(a, b, c, x=Fe.ratios),
             start=list(a=40, b=-4, c=-5))
 model2 <- predict(fit2)
-plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for both runs",
      sub="fitting to numeric ratios", type="b", pch=16)
 lines(Fe.ratios, model2, col="red", lwd=3)
+#===================================================
 
 # fit to a continum of ratio values
 # how does this give different results?
@@ -412,8 +414,39 @@ summary(fit2)
 library(MASS)  # adds support for nls and glm
 confint(fit2, level=0.1)  # still gives error, but not with 10% CIs!!!
 
+#===========================================================================================
+##### Try fitting gompertz while removing 5th data point and/or use robust regression? #####
+#===========================================================================================
+new.vals <- treat.means[-3]
+new.ratios <- Fe.ratios[-3]
+fit3 <- nls(new.vals ~ gomp(a, b, c, x=new.ratios),
+            start=list(a=40, b=-4, c=-5))
+summary(fit3)
+
+# plot(new.ratios, new.vals)
+# plot(new.ratios, gomp(40, -4, -7, x=new.ratios))
+model3 <- predict(fit3)
+plot(new.ratios, new.vals, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for both runs",
+     sub="fitting w/o 0.7 treatment", type="b", pch=16)
+lines(new.ratios, model3, col="red", lwd=3)
 
 
+
+#### also try fitting this model to the treatment means from both Run 1 and Run 2 ####
+
+
+# insert that code here.
+
+
+
+
+
+
+
+
+# Note: I haven't been able to fit any of these other models.
+# ie, gompertz seems to be the nicest so far.
 #============================================
 # plotting best fit line using Logistic Model
 #============================================
@@ -439,6 +472,36 @@ lrp <- function(x, a, b, tx) {
 }
 
 plot(x, lrp(x=x, a=0, b=10, tx=5))
+plot(lrp(x=Fe.ratios, a=0, b=10, tx=0.6), treat.means)
+plot(Fe.ratios,  lrp(x=Fe.ratios, a=0, b=1, tx=0.6))
 # a = start of y-axis
 # b = incriment y-axis increases by
 # tx = y val at which plot levels off
+### can test different tx values & see which value gives the model that fits the data best ###
+
+nls(treat.means ~ lrp(x=Fe.ratios, a, b, tx),
+    start=list(a=0, b=46.1, tx=0.6))
+
+# plotting this against the function works
+plot(gomp(40, -1, -1, x=Fe.ratios), treat.means)
+
+# this just starts smushing them all together
+plot(lrp(x=Fe.ratios, a=13, b=46, tx=0.6), treat.means)
+
+# plotting this w/ slope & intercept work because x-axis values are characters?
+plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+abline(a=13.037, b=46.100)
+
+# nope
+plot(colnames(both.run.sums), lrp(x=treat.means, a=0, b=2, tx=42.1))
+
+# this doesn't work
+plot(lrp(x=Fe.ratios, a=0, b=1, tx=0.6), treat.means)
+# but this does, but axies are flipped
+plot(treat.means, lrp(x=Fe.ratios, a=0, b=1, tx=0.6))
+# this "works", but it doesn't keep applying the ifelse after the threshold is found
+plot(Fe.ratios, lrp(x=treat.means, a=0, b=1, tx=40))
+
+### maybe this model is not worth it anyway, since it's not exactly "fitting" anything
+# it's just fitting a linear model until I tell it to stop and make a plateau ###
