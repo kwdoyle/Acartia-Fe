@@ -75,3 +75,10 @@ lines(growth$time[4:6], predict(slope1) - 1.96 * 0.0006307, lwd=2, lty=2)
 # yeah these CIs are barely visible, but that is a good thing!
 # and due to the fact that these slopes & their CIs don't overlap at all, they are
 # significantly different.
+
+
+
+#==========================================================================================
+# need to take slopes of growth curves where they begin to differentiate for all replicates
+# and make a table and do a t-test between all the 100nM and 1nM slopes.
+#==========================================================================================
