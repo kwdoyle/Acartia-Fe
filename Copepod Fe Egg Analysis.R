@@ -441,10 +441,21 @@ fit.run1 <- nls(treat.means.1 ~ gomp(a, b, c, x=Fe.ratios),
 
 model.run1 <- predict(fit.run1)
 
-plot(Fe.ratios, treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
+plot(Fe.ratios, treat.means.1, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for Run 1", type="b", pch=16)
 lines(Fe.ratios, model.run1, col="red", lwd=3)
 
+# removing 5th data point
+new.vals.1 <- treat.means.1[-3]
+fit.run1.2 <- nls(new.vals.1 ~ gomp(a, b, c, x=new.ratios),
+                  start=list(a=40, b=-4, c=-5))
+model.run1.2 <- predict(fit.run1.2)
+plot(new.ratios, new.vals.1, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for Run 1 - minus dp 5",
+     type="b", pch=16)
+lines(new.ratios, model.run1.2, col="red", lwd=3)
+# looks as if the point where it starts leveling off doesn't change between
+# including or excluding the outlier
 
 
 
