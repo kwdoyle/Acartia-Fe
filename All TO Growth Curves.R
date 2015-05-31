@@ -216,11 +216,35 @@ se.1 <- c(Feb28.1.se, Mar9.1.se, Mar13.1.se, Mar17.1.se, Mar21.1.se, Apr4.1.se,
 TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
 row.names(TO.slopes) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
                           "Apr28", "May2", "May6")
+# add column of lables
+TO.slopes$Day <- as.factor(row.names(TO.slopes))
 
-
+# change order of factor levels
+TO.slopes$Day <- factor(TO.slopes$Day, levels(TO.slopes$Day)[c(5,9,6,7,8,3,4,1,2,10,11)])
 
 # F-test to compare variances
 var.test(slopes.100, slopes.1)  # p > 0.05; variances are not different
 
 # t-test to compare slopes
 t.test(slopes.100, slopes.1, alternative="greater")  # p < 0.01; slopes are different
+
+
+# make a nice table?
+# no, this is maddening bullshit.
+# all this fucking does is make a table using functions, or will put 1s in for everything.
+library(tables)
+
+tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width) * (mean + sd), data=iris)
+tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width), data=iris)
+tabular(TO.slopes$Day ~ Format(digits=3) * (TO.slopes$slopes.100 + TO.slopes$slopes.1) * (mean))
+
+# this is the closest I can get.
+latex(tabular(Day ~ Format(digits=3) * (slopes.100 + se.100
+                                            + slopes.1 + se.1) * (print),
+                                            data=TO.slopes))
+# maybe paste the latex code and just remove the 'paste' text?
+
+
+
+tabular(Day ~ All(TO.slopes), data=TO.slopes)
+as.tabular(TO.slopes)
