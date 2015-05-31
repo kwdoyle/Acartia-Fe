@@ -377,6 +377,10 @@ model <- predict(fit.nls)  # this will be the fitted line
 #============================================
 # plotting best fit line using Gompertz Model
 #============================================
+# relationship you'd expect?
+plot(Fe.ratios, gomp(a=44, b=-0.5, c=-3, x=Fe.ratios))
+
+
 plot(colnames(both.run.sums), treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for both runs",
      sub="fitting to 1:7 on x-axis", type="b", pch=16)
@@ -502,6 +506,8 @@ lrp <- function(x, a, b, tx) {
   ifelse(x > tx, a + b * tx, a + b * x)
 }
 
+
+### maybe this is more like something you'd expect to see? ###
 plot(Fe.ratios, lrp(Fe.ratios, 13, 46, 0.6))
 
 nls(treat.means ~ lrp(x=Fe.ratios, a, b, tx),
