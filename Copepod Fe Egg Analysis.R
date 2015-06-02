@@ -608,3 +608,11 @@ plot(treat.means ~ gomp(a=40, b=-4, c=-5, x=Fe.ratios), ylim=c(0,60))
 
 # this doesn't?
 lrp2(x=Fe.ratios, a=13, b=46, x.max=0.6, y.max=40)
+
+
+
+## fit model using 'segmented' package to the data instead
+library(segmented)
+
+out.lm <- lm(treat.means[-c(1:3)] ~ as.numeric(colnames(both.run.sums)[-c(1:3)]))
+segmented(out.lm, seg.Z=~Fe.ratios, psi=list(Fe.ratios=c(0.4, 0.8)), control=seg.control(display=FALSE))
