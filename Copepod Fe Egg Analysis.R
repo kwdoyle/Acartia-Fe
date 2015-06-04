@@ -291,36 +291,11 @@ x <- as.numeric(colnames(both.run.sums))  # can use 'Fe.ratios' for this as well
 out.lm <- lm(y ~ x)
 seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                      control=seg.control(display=FALSE))
-# add weights to this fit?
-# via plotting all the data points instead of their means (find that plot in the first script)
-# and then find the residuals
 
 
-
-#=========================================
-# Add best-fit line & confidence Intervals
-#=========================================
-## Incorrect way
+# add best-fit line & confidence intervals
 seg.line <- broken.line(seg.fit)
-plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for both runs",
-     sub="incorrect CI calculation", type="b", pch=16)
-lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
-# use something like this line?
-# no this plots the breakpoint at the 0.6 treatment too.
-#points(Fe.ratios, broken.line(seg.fit,link=FALSE)$fit,col=2,pch=20, type="l")
 
-# add confidence intervals
-CI.plus <- seg.line$fit + seg.line$se.fit
-CI.minus <- seg.line$fit - seg.line$se.fit
-
-# add them to the plot
-lines(Fe.ratios, CI.plus, col="red", lty=2, lwd=2)
-lines(Fe.ratios, CI.minus, col="red", lty=2, lwd=2)
-
-
-
-## Correct way
 plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
 lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
@@ -337,8 +312,9 @@ lines(Fe.ratios, LL, col="red", lty=2, lwd=2)
 points.segmented(seg.fit)
 
 
-
-
+#=================
+# some extra stuff
+#=================
 # plot just the fit
 plot.segmented(seg.fit, main="plot.segmented(seg.fit)")
 
@@ -351,16 +327,10 @@ summary(seg.fit)$psi[3]  # s.e.
 # CI on the breakpoint itself. uses the Delta method for the ratio of two random variables.
 confint.segmented(seg.fit)
 
-
-# how do I make the slope of the line after the breakpoint 0?
-# A: I don't really need to
-#===============================================================================
-# try to weight each data point by the number of observations there are for each
-# analyze residuals; do a rank-order plot as well
-#===============================================================================
-
 # check residuals
 plot(Fe.ratios, residuals(seg.fit))
+# analyze residuals; do a rank-order plot as well
+
 
 # to calculate Fe:C ratio:
 #minimum + 0.6*(difference betwn max and min) where min=deplete and max=replete
@@ -368,8 +338,10 @@ plot(Fe.ratios, residuals(seg.fit))
 
 
 
-
+#=======================================================================================
 # Plotting all the data points instead of just their means and fitting the model to that
+# this is a method to weight each treatment relative to how many observations there are
+#=======================================================================================
 treat.1.sums <- both.run.sums[,1]
 treat.2.sums <- both.run.sums[,2]
 treat.3.sums <- both.run.sums[,3]
@@ -398,7 +370,98 @@ treat6 <- rep(0.2, length(all.6))
 treat7 <- rep(0, length(all.7))
 all.treat <- c(treat1, treat2, treat3, treat4, treat5, treat6, treat7)
 
-# plot all the data points
-plot(all.treat, all.pts, ylim=c(0,60))
+
 
 # now fit the same model to these points
+y2 <- all.pts
+x2 <- all.treat
+
+all.lm <- lm(y2 ~ x2)
+seg.fit.all <- segmented(all.lm, seg.Z=~x2, psi=list(x2=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+                     control=seg.control(display=FALSE))
+seg.line.all <- broken.line(seg.fit.all)
+
+
+# plot all the data points & the best-fit line
+plot(all.treat, all.pts, pch=16, xlab="treatment", ylab="# of eggs",
+     main="Sum of eggs across each well \n for each treatment")
+lines(all.treat, seg.line.all$fit, col="red", lwd=2)
+
+# CIs
+UL.all <- seg.line.all$fit + 1.96 * seg.line.all$se.fit
+LL.all <- seg.line.all$fit - 1.96 * seg.line.all$se.fit
+
+# add to plot
+lines(all.treat, UL.all, col="red", lty=2, lwd=2)
+lines(all.treat, LL.all, col="red", lty=2, lwd=2)
+
+# points.segmented adds the breakpoint on the plot
+points.segmented(seg.fit.all)
+
+# check residuals
+plot(all.treat, residuals(seg.fit.all))  # this doesn't show much.
+
+
+
+#=======================================================================================
+# Fitting model to just Run 1
+#=======================================================================================
+y3 <- treat.means.1
+x3 <- as.numeric(colnames(run1.sums))
+
+lm.1 <- lm(y3 ~ x3)
+seg.fit.1 <- segmented(lm.1, seg.Z=~x3, psi=list(x3=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+                       control=seg.control(display=FALSE))
+seg.line.1 <- broken.line(seg.fit.1)
+
+# plot points & best-fit line
+plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for Run 1", type="b", pch=16)
+lines(colnames(run1.sums), seg.line.1$fit, col="red", lwd=2)
+
+# CIs
+UL.1 <- seg.line.1$fit + 1.96 * seg.line.1$se.fit
+LL.1 <- seg.line.1$fit - 1.96 * seg.line.1$se.fit
+
+# add to plot
+lines(colnames(run1.sums), UL.1, col="red", lty=2, lwd=2)
+lines(colnames(run1.sums), LL.1, col="red", lty=2, lwd=2)
+
+# points.segmented adds the breakpoint on the plot
+points.segmented(seg.fit.1)
+
+# residuals
+plot(colnames(run1.sums), residuals(seg.fit.1))
+
+
+
+
+#=======================================================================================
+# Fitting model to just Run 2
+#=======================================================================================
+y4 <- treat.means.2
+x4 <- as.numeric(colnames(run2.sums))
+
+lm.2 <- lm(y4 ~ x4)
+seg.fit.2 <- segmented(lm.2, seg.Z=~x4, psi=list(x4=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+                       control=seg.control(display=FALSE))
+seg.line.2 <- broken.line(seg.fit.2)
+
+# plot points & best-fit line
+plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
+     main="Mean of each treatment across all wells \n for Run 2", type="b", pch=16)
+lines(colnames(run2.sums), seg.line.2$fit, col="red", lwd=2)
+
+# CIs
+UL.2 <- seg.line.2$fit + 1.96 * seg.line.2$se.fit
+LL.2 <- seg.line.2$fit - 1.96 * seg.line.2$se.fit
+
+# add to plot
+lines(colnames(run2.sums), UL.2, col="red", lty=2, lwd=2)
+lines(colnames(run2.sums), LL.2, col="red", lty=2, lwd=2)
+
+# points.segmented adds the breakpoint on the plot
+points.segmented(seg.fit.2)
+
+# residuals
+plot(colnames(run2.sums), residuals(seg.fit.2))
