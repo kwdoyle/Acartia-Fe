@@ -283,6 +283,7 @@ arrows(as.numeric(colnames(run2.sums)), treat.means.2-std.errs.2, as.numeric(col
 #========================================
 # Model fitting using 'segmented' package
 #========================================
+library(segmented)
 
 Fe.ratios <- as.numeric(colnames(both.run.sums))
 
@@ -294,14 +295,14 @@ seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # try other breakpoi
 
 
 # add best-fit line & confidence intervals
-seg.line <- broken.line(seg.fit)
+seg.line <- broken.line(seg.fit)  # find fitted values
 
 plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for both runs", type="b", pch=16)
+     main="Mean of each treatment across all wells \n for both runs", type="p", pch=16)
 lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
 
-# correct CIs
-UL <- seg.line$fit + 1.96 * seg.line$se.fit
+# CIs
+UL <- seg.line$fit + 1.96 * seg.line$se.fit  # 1.96 = qnorm( 1-(0.05/2) )
 LL <- seg.line$fit - 1.96 * seg.line$se.fit
 
 # add to plot
@@ -339,8 +340,8 @@ plot(Fe.ratios, residuals(seg.fit))
 
 
 #=======================================================================================
-# Plotting all the data points instead of just their means and fitting the model to that
-# this is a method to weight each treatment relative to how many observations there are
+# Plotting all the data points instead of just their means and fitting the model to that.
+# This is a method to weight each treatment relative to how many observations there are
 #=======================================================================================
 treat.1.sums <- both.run.sums[,1]
 treat.2.sums <- both.run.sums[,2]
@@ -416,7 +417,7 @@ seg.line.1 <- broken.line(seg.fit.1)
 
 # plot points & best-fit line
 plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for Run 1", type="b", pch=16)
+     main="Mean of each treatment across all wells \n for Run 1", type="p", pch=16)
 lines(colnames(run1.sums), seg.line.1$fit, col="red", lwd=2)
 
 # CIs
@@ -435,6 +436,70 @@ plot(colnames(run1.sums), residuals(seg.fit.1))
 
 
 
+#============================================================
+# Fit to all the data points instead of their means for Run 1
+#============================================================
+treat.1.sums.1 <- run1.sums[,1]
+treat.2.sums.1 <- run1.sums[,2]
+treat.3.sums.1 <- run1.sums[,3]
+treat.4.sums.1 <- run1.sums[,4]
+treat.5.sums.1 <- run1.sums[,5]
+treat.6.sums.1 <- run1.sums[,6]
+treat.7.sums.1 <- run1.sums[,7]
+
+# remove NAs
+all.1.1 <- treat.1.sums.1[!is.na(treat.1.sums.1)]
+all.2.1 <- treat.2.sums.1[!is.na(treat.2.sums.1)]
+all.3.1 <- treat.3.sums.1[!is.na(treat.3.sums.1)]
+all.4.1 <- treat.4.sums.1[!is.na(treat.4.sums.1)]
+all.5.1 <- treat.5.sums.1[!is.na(treat.5.sums.1)]
+all.6.1 <- treat.6.sums.1[!is.na(treat.6.sums.1)]
+all.7.1 <- treat.7.sums.1[!is.na(treat.7.sums.1)]
+all.pts.1 <- c(all.1.1, all.2.1, all.3.1, all.4.1, all.5.1, all.6.1, all.7.1)
+
+# make longer vector of treatments
+treat1.1 <- rep(1, length(all.1.1))
+treat2.1 <- rep(0.8, length(all.2.1))
+treat3.1 <- rep(0.7, length(all.3.1))
+treat4.1 <- rep(0.6, length(all.4.1))
+treat5.1 <- rep(0.4, length(all.5.1))
+treat6.1 <- rep(0.2, length(all.6.1))
+treat7.1 <- rep(0, length(all.7.1))
+all.treat.1 <- c(treat1.1, treat2.1, treat3.1, treat4.1, treat5.1, treat6.1, treat7.1)
+
+# now fit the same model to these points
+y5 <- all.pts.1
+x5 <- all.treat.1
+
+all.lm.1 <- lm(y5 ~ x5)
+seg.fit.all.1 <- segmented(all.lm.1, seg.Z=~x5, psi=list(x5=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+                         control=seg.control(display=FALSE))
+seg.line.all.1 <- broken.line(seg.fit.all.1)
+
+
+# plot all the data points & the best-fit line
+plot(all.treat.1, all.pts.1, pch=16, xlab="treatment", ylab="# of eggs",
+     main="Sum of eggs across each well for each \n treatment for Run 1")
+lines(all.treat.1, seg.line.all.1$fit, col="red", lwd=2)
+
+# CIs
+UL.all.1 <- seg.line.all.1$fit + 1.96 * seg.line.all.1$se.fit
+LL.all.1 <- seg.line.all.1$fit - 1.96 * seg.line.all.1$se.fit
+
+# add to plot
+lines(all.treat.1, UL.all.1, col="red", lty=2, lwd=2)
+lines(all.treat.1, LL.all.1, col="red", lty=2, lwd=2)
+
+# points.segmented adds the breakpoint on the plot
+points.segmented(seg.fit.all.1)
+
+# check residuals
+plot(all.treat.1, residuals(seg.fit.all.1))
+
+
+
+
+
 
 #=======================================================================================
 # Fitting model to just Run 2
@@ -449,7 +514,7 @@ seg.line.2 <- broken.line(seg.fit.2)
 
 # plot points & best-fit line
 plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for Run 2", type="b", pch=16)
+     main="Mean of each treatment across all wells \n for Run 2", type="p", pch=16)
 lines(colnames(run2.sums), seg.line.2$fit, col="red", lwd=2)
 
 # CIs
@@ -465,3 +530,19 @@ points.segmented(seg.fit.2)
 
 # residuals
 plot(colnames(run2.sums), residuals(seg.fit.2))
+
+# estimate for treatment breakpoint & its std error
+summary(seg.fit.2)$psi
+
+
+#============================================================
+# Fit to all the data points instead of their means for Run 2
+#============================================================
+
+
+
+
+
+### CIs for breakpoints of Run 2 and both runs together
+confint(seg.fit)  # both runs
+confint(seg.fit.2)  # run 2
