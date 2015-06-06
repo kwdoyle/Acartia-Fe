@@ -292,7 +292,7 @@ x <- as.numeric(colnames(both.run.sums))  # can use 'Fe.ratios' for this as well
 out.lm <- lm(y ~ x)
 seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                      control=seg.control(display=FALSE))
-
+AIC(seg.fit)
 
 # add best-fit line & confidence intervals
 seg.line <- broken.line(seg.fit)  # find fitted values
@@ -381,7 +381,7 @@ all.lm <- lm(y2 ~ x2)
 seg.fit.all <- segmented(all.lm, seg.Z=~x2, psi=list(x2=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                      control=seg.control(display=FALSE))
 seg.line.all <- broken.line(seg.fit.all)
-
+AIC(seg.fit.all)
 
 # plot all the data points & the best-fit line
 plot(all.treat, all.pts, pch=16, xlab="treatment", ylab="# of eggs",
@@ -414,6 +414,7 @@ lm.1 <- lm(y3 ~ x3)
 seg.fit.1 <- segmented(lm.1, seg.Z=~x3, psi=list(x3=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                        control=seg.control(display=FALSE))
 seg.line.1 <- broken.line(seg.fit.1)
+AIC(seg.fit.1)
 
 # plot points & best-fit line
 plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
@@ -475,7 +476,7 @@ all.lm.1 <- lm(y5 ~ x5)
 seg.fit.all.1 <- segmented(all.lm.1, seg.Z=~x5, psi=list(x5=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                          control=seg.control(display=FALSE))
 seg.line.all.1 <- broken.line(seg.fit.all.1)
-
+AIC(seg.fit.all.1)
 
 # plot all the data points & the best-fit line
 plot(all.treat.1, all.pts.1, pch=16, xlab="treatment", ylab="# of eggs",
@@ -511,6 +512,7 @@ lm.2 <- lm(y4 ~ x4)
 seg.fit.2 <- segmented(lm.2, seg.Z=~x4, psi=list(x4=c(0.6)),  # try other breakpoints (0.5 and 0.7)
                        control=seg.control(display=FALSE))
 seg.line.2 <- broken.line(seg.fit.2)
+AIC(seg.fit.2)
 
 # plot points & best-fit line
 plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
