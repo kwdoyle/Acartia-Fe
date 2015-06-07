@@ -290,7 +290,7 @@ Fe.ratios <- as.numeric(colnames(both.run.sums))
 y <- treat.means
 x <- as.numeric(colnames(both.run.sums))  # can use 'Fe.ratios' for this as well
 out.lm <- lm(y ~ x)
-seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # this finds the same ans when using any other breakpts
                      control=seg.control(display=FALSE))
 AIC(seg.fit)
 
@@ -540,7 +540,62 @@ summary(seg.fit.2)$psi
 #============================================================
 # Fit to all the data points instead of their means for Run 2
 #============================================================
+treat.1.sums.2 <- run2.sums[,1]
+treat.2.sums.2 <- run2.sums[,2]
+treat.3.sums.2 <- run2.sums[,3]
+treat.4.sums.2 <- run2.sums[,4]
+treat.5.sums.2 <- run2.sums[,5]
+treat.6.sums.2 <- run2.sums[,6]
+treat.7.sums.2 <- run2.sums[,7]
 
+# remove NAs
+all.1.2 <- treat.1.sums.2[!is.na(treat.1.sums.2)]
+all.2.2 <- treat.2.sums.2[!is.na(treat.2.sums.2)]
+all.3.2 <- treat.3.sums.2[!is.na(treat.3.sums.2)]
+all.4.2 <- treat.4.sums.2[!is.na(treat.4.sums.2)]
+all.5.2 <- treat.5.sums.2[!is.na(treat.5.sums.2)]
+all.6.2 <- treat.6.sums.2[!is.na(treat.6.sums.2)]
+all.7.2 <- treat.7.sums.2[!is.na(treat.7.sums.2)]
+all.pts.2 <- c(all.1.2, all.2.2, all.3.2, all.4.2, all.5.2, all.6.2, all.7.2)
+
+# make longer vector of treatments
+treat1.2 <- rep(1, length(all.1.2))
+treat2.2 <- rep(0.8, length(all.2.2))
+treat3.2 <- rep(0.7, length(all.3.2))
+treat4.2 <- rep(0.6, length(all.4.2))
+treat5.2 <- rep(0.4, length(all.5.2))
+treat6.2 <- rep(0.2, length(all.6.2))
+treat7.2 <- rep(0, length(all.7.2))
+all.treat.2 <- c(treat1.2, treat2.2, treat3.2, treat4.2, treat5.2, treat6.2, treat7.2)
+
+# now fit the same model to these points
+y6 <- all.pts.2
+x6 <- all.treat.2
+
+all.lm.2 <- lm(y6 ~ x6)
+seg.fit.all.2 <- segmented(all.lm.2, seg.Z=~x6, psi=list(x6=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+                           control=seg.control(display=FALSE))
+seg.line.all.2 <- broken.line(seg.fit.all.2)
+AIC(seg.fit.all.2)
+
+# plot all the data points & the best-fit line
+plot(all.treat.2, all.pts.2, pch=16, xlab="treatment", ylab="# of eggs",
+     main="Sum of eggs across each well for each \n treatment for Run 2")
+lines(all.treat.2, seg.line.all.2$fit, col="red", lwd=2)
+
+# CIs
+UL.all.2 <- seg.line.all.2$fit + 1.96 * seg.line.all.2$se.fit
+LL.all.2 <- seg.line.all.2$fit - 1.96 * seg.line.all.2$se.fit
+
+# add to plot
+lines(all.treat.2, UL.all.2, col="red", lty=2, lwd=2)
+lines(all.treat.2, LL.all.2, col="red", lty=2, lwd=2)
+
+# points.segmented adds the breakpoint on the plot
+points.segmented(seg.fit.all.2)
+
+# check residuals
+plot(all.treat.2, residuals(seg.fit.all.2))
 
 
 
@@ -548,3 +603,17 @@ summary(seg.fit.2)$psi
 ### CIs for breakpoints of Run 2 and both runs together
 confint(seg.fit)  # both runs
 confint(seg.fit.2)  # run 2
+
+
+
+
+
+
+
+#===========
+# C:N Ratios
+#===========
+# From Kiorboe
+Egg.C <- 45.7  # ng/egg
+Egg.N <- 9.1  # ng/egg
+Egg.CtoN <- Egg.C / Egg.N
