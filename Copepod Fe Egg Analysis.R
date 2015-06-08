@@ -580,7 +580,7 @@ AIC(seg.fit.all.2)
 
 # plot all the data points & the best-fit line
 plot(all.treat.2, all.pts.2, pch=16, xlab="treatment", ylab="# of eggs",
-     main="Sum of eggs across each well for each \n treatment for Run 2")
+     main="Sum of eggs across each well for each \n treatment for Run 2", ylim=c(0,100))  # make ylim be c(0,100) to match the plots from Run 1 and both runs
 lines(all.treat.2, seg.line.all.2$fit, col="red", lwd=2)
 
 # CIs
@@ -605,7 +605,9 @@ confint(seg.fit)  # both runs
 confint(seg.fit.2)  # run 2
 
 
-
+# Vector of AIC values
+AICs <- c("all mean"=AIC(seg.fit), "run 1 mean"=AIC(seg.fit.1), "run 2 mean"=AIC(seg.fit.2),
+          "all points"=AIC(seg.fit.all), "run 1 points"=AIC(seg.fit.all.1), "run 2 points"=AIC(seg.fit.all.2))
 
 
 
