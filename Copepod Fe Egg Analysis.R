@@ -30,7 +30,6 @@ colnames(run1.day5) <- c("1", "0.8", "0.7", "0.6", "0.4", "0.2", "0")
 # 1st day
 run2.day1 <- read.csv("/Users/kevin/Research/Experiment/Data/New CSVs/Run 2/run 2 - day 1.csv")
 colnames(run2.day1) <- c("1", "0.8", "0.7", "0.6", "0.4", "0.2", "0")
-# did day 1 have an outlier that was removed in the low treatment?
 
 # 2nd day
 run2.day2 <- read.csv("/Users/kevin/Research/Experiment/Data/New CSVs/Run 2/run 2 - day 2.csv")
@@ -288,7 +287,7 @@ library(segmented)
 Fe.ratios <- as.numeric(colnames(both.run.sums))
 
 y <- treat.means
-x <- as.numeric(colnames(both.run.sums))  # can use 'Fe.ratios' for this as well
+x <- Fe.ratios
 out.lm <- lm(y ~ x)
 seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # this finds the same ans when using any other breakpts
                      control=seg.control(display=FALSE))
@@ -378,7 +377,7 @@ y2 <- all.pts
 x2 <- all.treat
 
 all.lm <- lm(y2 ~ x2)
-seg.fit.all <- segmented(all.lm, seg.Z=~x2, psi=list(x2=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit.all <- segmented(all.lm, seg.Z=~x2, psi=list(x2=c(0.6)),
                      control=seg.control(display=FALSE))
 seg.line.all <- broken.line(seg.fit.all)
 AIC(seg.fit.all)
@@ -411,7 +410,7 @@ y3 <- treat.means.1
 x3 <- as.numeric(colnames(run1.sums))
 
 lm.1 <- lm(y3 ~ x3)
-seg.fit.1 <- segmented(lm.1, seg.Z=~x3, psi=list(x3=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit.1 <- segmented(lm.1, seg.Z=~x3, psi=list(x3=c(0.6)),
                        control=seg.control(display=FALSE))
 seg.line.1 <- broken.line(seg.fit.1)
 AIC(seg.fit.1)
@@ -473,7 +472,7 @@ y5 <- all.pts.1
 x5 <- all.treat.1
 
 all.lm.1 <- lm(y5 ~ x5)
-seg.fit.all.1 <- segmented(all.lm.1, seg.Z=~x5, psi=list(x5=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit.all.1 <- segmented(all.lm.1, seg.Z=~x5, psi=list(x5=c(0.6)),
                          control=seg.control(display=FALSE))
 seg.line.all.1 <- broken.line(seg.fit.all.1)
 AIC(seg.fit.all.1)
@@ -509,7 +508,7 @@ y4 <- treat.means.2
 x4 <- as.numeric(colnames(run2.sums))
 
 lm.2 <- lm(y4 ~ x4)
-seg.fit.2 <- segmented(lm.2, seg.Z=~x4, psi=list(x4=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit.2 <- segmented(lm.2, seg.Z=~x4, psi=list(x4=c(0.6)),
                        control=seg.control(display=FALSE))
 seg.line.2 <- broken.line(seg.fit.2)
 AIC(seg.fit.2)
@@ -573,7 +572,7 @@ y6 <- all.pts.2
 x6 <- all.treat.2
 
 all.lm.2 <- lm(y6 ~ x6)
-seg.fit.all.2 <- segmented(all.lm.2, seg.Z=~x6, psi=list(x6=c(0.6)),  # try other breakpoints (0.5 and 0.7)
+seg.fit.all.2 <- segmented(all.lm.2, seg.Z=~x6, psi=list(x6=c(0.6)),
                            control=seg.control(display=FALSE))
 seg.line.all.2 <- broken.line(seg.fit.all.2)
 AIC(seg.fit.all.2)
