@@ -34,7 +34,8 @@ colnames(Apr28) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 colnames(May2) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 colnames(May6) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 
-
+### Try fitting the segmented model to all of these and take the slopes of before & after the breakpoint
+# and take relative growth rates.
 #==================================================================================
 # take growth of both from ≈3rd day until before the 100nM reaches stationary phase
 #==================================================================================
@@ -193,7 +194,8 @@ May6.1.se <- summary(lm(log(May6$"1nmFe"[4:6]) ~ May6$time[4:6]))$coefficients[,
 
 
 
-
+# Maybe do plots like on p.92 of Ecological Stoichiometry for TO growth & do relative growth rates
+# So just calculate slops from points 1:3 and use them as the max growth rate.
 #=============================================
 # data frame of slopes & their standard errors
 #=============================================
@@ -216,6 +218,7 @@ se.1 <- c(Feb28.1.se, Mar9.1.se, Mar13.1.se, Mar17.1.se, Mar21.1.se, Apr4.1.se,
 TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
 row.names(TO.slopes) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
                           "Apr28", "May2", "May6")
+colnames(TO.slopes) <- c("100 nM", "100 nM s.e.", "1 nM", "1 nM s.e.")
 # add column of lables
 #TO.slopes$Day <- as.factor(row.names(TO.slopes))
 
@@ -235,6 +238,7 @@ library(xtable)
 # turn to scientific notation
 TO.table <- format(TO.slopes, digits=3, scientific=T)
 
+# try to make the column names be something else
 print(xtable(TO.table), floating=T)
 
 
@@ -265,3 +269,15 @@ latex(tabular(Day ~ Format(digits=3) * (slopes.100 + se.100
 
 tabular(Day ~ All(TO.slopes), data=TO.slopes)
 as.tabular(TO.slopes)
+
+
+
+
+
+
+# Try fitting model to each growth curve and see where the breakpoint (point of Fe limitation) is
+# ...or maybe not, since I have to not include the part in stationary phase, and this would be a lot of
+# potentially pointless model fitting to every single growth curve.
+plot(Feb28$time, log(Feb28$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL)",
+     main="T. oceanica 2/28", type="b", col="red")
+points(Feb28$time, log(Feb28$"1nmFe"), type="b", col="blue")
