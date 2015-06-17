@@ -318,35 +318,60 @@ slopes.100 <- c(Feb28.100, Mar9.100, Mar13.100, Mar17.100, Mar21.100, Apr4.100, 
 se.100 <- c(Feb28.100.se, Mar9.100.se, Mar13.100.se, Mar17.100.se, Mar21.100.se, Apr4.100.se,
             Apr8.100.se, Apr12.100.se, Apr28.100.se, May2.100.se, May6.100.se)
 
-# relative growth rates
-RGR.100 <- c(Feb28.100.r, Mar9.100.r, Mar13.100.r, Mar17.100.r, Mar21.100.r, Apr4.100.r, Apr8.100.r,
-             Apr12.100.r, Apr28.100.r, May2.100.r, May6.100.r)
-# finish this #
-RGR.1 <- c()
-
 slopes.1 <- c(Feb28.1, Mar9.1, Mar13.1, Mar17.1, Mar21.1, Apr4.1, Apr8.1,
               Apr12.1, Apr28.1, May2.1, May6.1)
 
 se.1 <- c(Feb28.1.se, Mar9.1.se, Mar13.1.se, Mar17.1.se, Mar21.1.se, Apr4.1.se,
           Apr8.1.se, Apr12.1.se, Apr28.1.se, May2.1.se, May6.1.se)
 
+# relative growth rates
+RGR.100 <- c(Feb28.100.r, Mar9.100.r, Mar13.100.r, Mar17.100.r, Mar21.100.r, Apr4.100.r, Apr8.100.r,
+             Apr12.100.r, Apr28.100.r, May2.100.r, May6.100.r)
+
+RGR.1 <- c(Feb28.1.r, Mar9.1.r, Mar13.1.r, Mar17.1.r, Mar21.1.r, Apr4.1.r, Apr8.1.r,
+           Apr12.1.r, Apr28.1.r, May2.1.r, May6.1.r)
+
+
+
+
 
 # make a nicer table of these slopes to put in the paper. use R Markdown.
 TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
+
 row.names(TO.slopes) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
                           "Apr28", "May2", "May6")
 colnames(TO.slopes) <- c("100 nM", "100 nM s.e.", "1 nM", "1 nM s.e.")
-# add column of lables
-#TO.slopes$Day <- as.factor(row.names(TO.slopes))
 
-# change order of factor levels
-#TO.slopes$Day <- factor(TO.slopes$Day, levels(TO.slopes$Day)[c(5,9,6,7,8,3,4,1,2,10,11)])
+
+
+
+
+# table of RGRs
+TO.RGR <- data.frame(RGR.100, RGR.1)
+
+row.names(TO.RGR) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
+                       "Apr28", "May2", "May6")
+
+colnames(TO.RGR) <- c("100 nM RGR", "1 nM RGR")
+
+
+
+### Significance Tests
 
 # F-test to compare variances
 var.test(slopes.100, slopes.1)  # p > 0.05; variances are not different
 
 # t-test to compare slopes
 t.test(slopes.100, slopes.1, alternative="greater")  # p < 0.01; slopes are different
+
+# t-test to see if RGR.100 is different from 1
+t.test(RGR.100, mu=1)  # p=0.8; RGR is not different from 1
+
+# t-test to see if RGR.1 is different from 1
+t.test(RGR.1, mu=1)  # p < 0.01; RGR is different from 1
+
+# t-test to see if RGR.1 is less than 1
+t.test(RGR.1, alternative="less", mu=1)  # p < 0.01; RGR is less than 1
 
 
 ## Make nice table
@@ -355,37 +380,14 @@ library(xtable)
 # turn to scientific notation
 TO.table <- format(TO.slopes, digits=3, scientific=T)
 
-# try to make the column names be something else
-print(xtable(TO.table), floating=T)
+# generate LaTeX code for table
+print(xtable(TO.table))
 
+# table of RGRs
+RGR.table <- format(TO.RGR, digits=3, scientific=T)
 
-
-
-
-
-
-
-
-
-
-## Old table making bad-code
-# none of this really worked
-library(tables)
-
-tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width) * (mean + sd), data=iris)
-tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width), data=iris)
-tabular(TO.slopes$Day ~ Format(digits=3) * (TO.slopes$slopes.100 + TO.slopes$slopes.1) * (mean))
-
-# this is the closest I can get.
-latex(tabular(Day ~ Format(digits=3) * (slopes.100 + se.100
-                                            + slopes.1 + se.1) * (print),
-                                            data=TO.slopes))
-# maybe paste the latex code and just remove the 'paste' text?
-
-
-
-tabular(Day ~ All(TO.slopes), data=TO.slopes)
-as.tabular(TO.slopes)
+# generate LaTeX code for table
+print(xtable(TO.RGR))
 
 
 
@@ -395,6 +397,4 @@ as.tabular(TO.slopes)
 # Try fitting model to each growth curve and see where the breakpoint (point of Fe limitation) is
 # ...or maybe not, since I have to not include the part in stationary phase, and this would be a lot of
 # potentially pointless model fitting to every single growth curve.
-plot(Feb28$time, log(Feb28$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL)",
-     main="T. oceanica 2/28", type="b", col="red")
-points(Feb28$time, log(Feb28$"1nmFe"), type="b", col="blue")
+

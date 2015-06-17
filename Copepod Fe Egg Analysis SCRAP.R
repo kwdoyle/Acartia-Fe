@@ -53,3 +53,26 @@ total <- list(run1day1=run1.day1, run1day2=run1.day2, run1day3=run1.day3, run1da
               run2day4=run2.day4, run2day5=run2.day5)
 
 total.means <- aaply(laply(total, as.matrix), c(2, 3), mean, na.rm=TRUE)
+
+
+
+
+# stuff from All TO Growth Curves:
+## Old table making bad-code
+# none of this really worked
+library(tables)
+
+tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width) * (mean + sd), data=iris)
+tabular(Species ~ Format(digits=2) * (Sepal.Length + Sepal.Width), data=iris)
+tabular(TO.slopes$Day ~ Format(digits=3) * (TO.slopes$slopes.100 + TO.slopes$slopes.1) * (mean))
+
+# this is the closest I can get.
+latex(tabular(Day ~ Format(digits=3) * (slopes.100 + se.100
+                                        + slopes.1 + se.1) * (print),
+              data=TO.slopes))
+# maybe paste the latex code and just remove the 'paste' text?
+
+
+
+tabular(Day ~ All(TO.slopes), data=TO.slopes)
+as.tabular(TO.slopes)

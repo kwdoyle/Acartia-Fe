@@ -312,6 +312,19 @@ lines(Fe.ratios, LL, col="red", lty=2, lwd=2)
 points.segmented(seg.fit)
 
 
+#=========================
+# Try plotting with ggplot
+#=========================
+d <- data.frame(Fe.ratios, treat.means)
+f <- data.frame(Fe.ratios, seg.line$fit)
+ggplot(data=d, aes(x=Fe.ratios, y=treat.means)) +  # add CIs & breakpoint to this eventually
+  geom_point() +
+  theme_bw() +
+  geom_line(data=d, aes(x=Fe.ratios, y=seg.line$fit)) +
+  ylim(0, 60) +
+  xlab("Treatment (% Replete Fe)" ) + ylab("Mean Number of Eggs") 
+  
+
 #=================
 # some extra stuff
 #=================
@@ -325,6 +338,7 @@ summary(seg.fit)$psi[2]  # estimate
 summary(seg.fit)$psi[3]  # s.e.
 
 # CI on the breakpoint itself. uses the Delta method for the ratio of two random variables.
+### how is the upper limit on this so high? ###
 confint.segmented(seg.fit)
 
 # check residuals
