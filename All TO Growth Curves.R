@@ -35,7 +35,7 @@ colnames(May2) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 colnames(May6) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 
 ### Try fitting the segmented model to all of these and take the slopes of before & after the breakpoint
-# and take relative growth rates.
+# and take relative growth rates. RGR = µ/µ_max
 #==================================================================================
 # take growth of both from ≈3rd day until before the 100nM reaches stationary phase
 #==================================================================================
@@ -44,26 +44,46 @@ plot(Feb28$time[c(3:5)], log(Feb28$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab
      main="T. oceanica 2/28", type="b", col="red")
 points(Feb28$time[c(3:5)], log(Feb28$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Feb28.100 <- coef(lm(log(Feb28$"100nmFe"[3:5]) ~ Feb28$time[3:5]))[2]
 Feb28.1 <- coef(lm(log(Feb28$"1nmFe"[3:5]) ~ Feb28$time[3:5]))[2]
+# slopes before limitation for relative growth rates (µ_max)
+Feb28.100.max <- coef(lm(log(Feb28$"100nmFe"[1:3]) ~ Feb28$time[1:3]))[2]
+Feb28.1.max <- coef(lm(log(Feb28$"1nmFe"[1:3]) ~ Feb28$time[1:3]))[2]
 # s.e.
 Feb28.100.se <- summary(lm(log(Feb28$"100nmFe"[3:5]) ~ Feb28$time[3:5]))$coefficients[, 2][2]
 Feb28.1.se <- summary(lm(log(Feb28$"1nmFe"[3:5]) ~ Feb28$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Feb28.100.max.se <- summary(lm(log(Feb28$"100nmFe"[1:3]) ~ Feb28$time[1:3]))$coefficients[, 2][2]
+Feb28.1.max.se <- summary(lm(log(Feb28$"1nmFe"[1:3]) ~ Feb28$time[1:3]))$coefficients[, 2][2]
+
+### µ / µ_max
+Feb28.100.r <- Feb28.100 / Feb28.100.max
+Feb28.1.r <- Feb28.1 / Feb28.1.max
 
 
 
 # Mar 9
-plot(Mar9$time[c(3:5)], log(Mar9$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab="log(cells / mL)",
+plot(Mar9$time[c(1:5)], log(Mar9$"100nmFe"[c(1:5)]), xlab="time (hours)", ylab="log(cells / mL)",
      main="T. oceanica 3/9", type="b", col="red")
-points(Mar9$time[c(3:5)], log(Mar9$"1nmFe"[c(3:5)]), type="b", col="blue")
+points(Mar9$time[c(1:5)], log(Mar9$"1nmFe"[c(1:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Mar9.100 <- coef(lm(log(Mar9$"100nmFe"[3:5]) ~ Mar9$time[3:5]))[2]
 Mar9.1 <- coef(lm(log(Mar9$"1nmFe"[3:5]) ~ Mar9$time[3:5]))[2]
+# µ_max
+Mar9.100.max <- coef(lm(log(Mar9$"100nmFe"[1:3]) ~ Mar9$time[1:3]))[2]
+Mar9.1.max <- coef(lm(log(Mar9$"1nmFe"[1:3]) ~ Mar9$time[1:3]))[2]
 # s.e.
 Mar9.100.se <- summary(lm(log(Mar9$"100nmFe"[3:5]) ~ Mar9$time[3:5]))$coefficients[, 2][2]
 Mar9.1.se <- summary(lm(log(Mar9$"1nmFe"[3:5]) ~ Mar9$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Mar9.100.max.se <- summary(lm(log(Mar9$"100nmFe"[1:3]) ~ Mar9$time[1:3]))$coefficients[, 2][2]
+Mar9.1.max.se <- summary(lm(log(Mar9$"1nmFe"[1:3]) ~ Mar9$time[1:3]))$coefficients[, 2][2]
+
+### µ / µ_max
+Mar9.100.r <- Mar9.100 / Mar9.100.max  # I guess the 100 started growing faster after the 3rd day?
+Mar9.1.r <- Mar9.1 / Mar9.1.max
 
 
 
@@ -72,12 +92,23 @@ plot(Mar13$time[c(3:5)], log(Mar13$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab
      main="T. oceanica 3/13", type="b", col="red")
 points(Mar13$time[c(3:5)], log(Mar13$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Mar13.100 <- coef(lm(log(Mar13$"100nmFe"[3:5]) ~ Mar13$time[3:5]))[2]
 Mar13.1 <- coef(lm(log(Mar13$"1nmFe"[3:5]) ~ Mar13$time[3:5]))[2]
+# µ_max
+Mar13.100.max <- coef(lm(log(Mar13$"100nmFe"[1:3]) ~ Mar13$time[1:3]))[2]
+Mar13.1.max <- coef(lm(log(Mar13$"1nmFe"[1:3]) ~ Mar13$time[1:3]))[2]
 # s.e.
 Mar13.100.se <- summary(lm(log(Mar13$"100nmFe"[3:5]) ~ Mar13$time[3:5]))$coefficients[, 2][2]
 Mar13.1.se <- summary(lm(log(Mar13$"1nmFe"[3:5]) ~ Mar13$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Mar13.100.max.se <- summary(lm(log(Mar13$"100nmFe"[1:3]) ~ Mar13$time[1:3]))$coefficients[, 2][2]
+Mar13.1.max.se <- summary(lm(log(Mar13$"1nmFe"[1:3]) ~ Mar13$time[1:3]))$coefficients[, 2][2]
+
+### µ / µ_max
+Mar13.100.r <- Mar13.100 / Mar13.100.max
+Mar13.1.r <- Mar13.1 / Mar13.1.max
+
 
 
 
@@ -86,26 +117,48 @@ plot(Mar17$time[c(3:5)], log(Mar17$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab
      main="T. oceanica 3/17", type="b", col="red")
 points(Mar17$time[c(3:5)], log(Mar17$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Mar17.100 <- coef(lm(log(Mar17$"100nmFe"[3:5]) ~ Mar17$time[3:5]))[2]
 Mar17.1 <- coef(lm(log(Mar17$"1nmFe"[3:5]) ~ Mar17$time[3:5]))[2]
+# µ_max
+Mar17.100.max <- coef(lm(log(Mar17$"100nmFe"[1:3]) ~ Mar17$time[1:3]))[2]
+Mar17.1.max <- coef(lm(log(Mar17$"1nmFe"[1:3]) ~ Mar17$time[1:3]))[2]
 # s.e.
 Mar17.100.se <- summary(lm(log(Mar17$"100nmFe"[3:5]) ~ Mar17$time[3:5]))$coefficients[, 2][2]
 Mar17.1.se <- summary(lm(log(Mar17$"1nmFe"[3:5]) ~ Mar17$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Mar17.100.max.se <- summary(lm(log(Mar17$"100nmFe"[1:3]) ~ Mar17$time[1:3]))$coefficients[, 2][2]
+Mar17.1.max.se <- summary(lm(log(Mar17$"1nmFe"[1:3]) ~ Mar17$time[1:3]))$coefficients[, 2][2]
+
+### µ / µ_max
+Mar17.100.r <- Mar17.100 / Mar17.100.max
+Mar17.1.r <- Mar17.1 / Mar17.1.max
+
+
 
 
 
 # Mar 21
-plot(Mar21$time[c(3:5)], log(Mar21$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab="log(cells / mL)",
+plot(Mar21$time[c(1:5)], log(Mar21$"100nmFe"[c(1:5)]), xlab="time (hours)", ylab="log(cells / mL)",
      main="T. oceanica 3/21", type="b", col="red")
-points(Mar21$time[c(3:5)], log(Mar21$"1nmFe"[c(3:5)]), type="b", col="blue")
+points(Mar21$time[c(1:5)], log(Mar21$"1nmFe"[c(1:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Mar21.100 <- coef(lm(log(Mar21$"100nmFe"[3:5]) ~ Mar21$time[3:5]))[2]
 Mar21.1 <- coef(lm(log(Mar21$"1nmFe"[3:5]) ~ Mar21$time[3:5]))[2]
+# µ_max
+Mar21.100.max <- coef(lm(log(Mar21$"100nmFe"[1:3]) ~ Mar21$time[1:3]))[2]
+Mar21.1.max <- coef(lm(log(Mar21$"1nmFe"[1:3]) ~ Mar21$time[1:3]))[2]
 # s.e.
 Mar21.100.se <- summary(lm(log(Mar21$"100nmFe"[3:5]) ~ Mar21$time[3:5]))$coefficients[, 2][2]
 Mar21.1.se <- summary(lm(log(Mar21$"1nmFe"[3:5]) ~ Mar21$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Mar21.100.max.se <- summary(lm(log(Mar21$"100nmFe"[1:3]) ~ Mar21$time[1:3]))$coefficients[, 2][2]
+Mar21.1.max.se <- summary(lm(log(Mar21$"1nmFe"[1:3]) ~ Mar21$time[1:3]))$coefficients[, 2][2]
+
+### µ / µ_max
+Mar21.100.r <- Mar21.100 / Mar21.100.max
+Mar21.1.r <- Mar21.1 / Mar21.1.max
 
 
 
@@ -114,13 +167,22 @@ plot(Apr4$time[c(3:5)], log(Apr4$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab="
      main="T. oceanica 4/4", type="b", col="red")
 points(Apr4$time[c(3:5)], log(Apr4$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Apr4.100 <- coef(lm(log(Apr4$"100nmFe"[3:5]) ~ Apr4$time[3:5]))[2]
 Apr4.1 <- coef(lm(log(Apr4$"1nmFe"[3:5]) ~ Apr4$time[3:5]))[2]
+# µ_max
+Apr4.100.max <- coef(lm(log(Apr4$"100nmFe"[1:3]) ~ Apr4$time[1:3]))[2]
+Apr4.1.max <- coef(lm(log(Apr4$"1nmFe"[1:3]) ~ Apr4$time[1:3]))[2]
 # s.e.
 Apr4.100.se <- summary(lm(log(Apr4$"100nmFe"[3:5]) ~ Apr4$time[3:5]))$coefficients[, 2][2]
 Apr4.1.se <- summary(lm(log(Apr4$"1nmFe"[3:5]) ~ Apr4$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Apr4.100.max.se <- summary(lm(log(Apr4$"100nmFe"[1:3]) ~ Apr4$time[1:3]))$coefficients[, 2][2]
+Apr4.1.max.se <- summary(lm(log(Apr4$"1nmFe"[1:3]) ~ Apr4$time[1:3]))$coefficients[, 2][2]
 
+### µ / µ_max
+Apr4.100.r <- Apr4.100 / Apr4.100.max
+Apr4.1.r <- Apr4.1 / Apr4.1.max
 
 
 # Apr 8 
@@ -128,12 +190,23 @@ plot(Apr8$time[c(3:5)], log(Apr8$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab="
      main="T. oceanica 4/8", type="b", col="red")
 points(Apr8$time[c(3:5)], log(Apr8$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Apr8.100 <- coef(lm(log(Apr8$"100nmFe"[3:5]) ~ Apr8$time[3:5]))[2]
 Apr8.1 <- coef(lm(log(Apr8$"1nmFe"[3:5]) ~ Apr8$time[3:5]))[2]
+# µ_max
+Apr8.100.max <- coef(lm(log(Apr8$"100nmFe"[1:3]) ~ Apr8$time[1:3]))[2]
+Apr8.1.max <- coef(lm(log(Apr8$"1nmFe"[1:3]) ~ Apr8$time[1:3]))[2]
 # s.e.
 Apr8.100.se <- summary(lm(log(Apr8$"100nmFe"[3:5]) ~ Apr8$time[3:5]))$coefficients[, 2][2]
 Apr8.1.se <- summary(lm(log(Apr8$"1nmFe"[3:5]) ~ Apr8$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Apr8.100.max.se <- summary(lm(log(Apr8$"100nmFe"[1:3]) ~ Apr8$time[1:3]))$coefficients[, 2][2]
+Apr8.1.max.se <- summary(lm(log(Apr8$"1nmFe"[1:3]) ~ Apr8$time[1:3]))$coefficients[, 2][2]
+
+
+### µ / µ_max
+Apr8.100.r <- Apr8.100 / Apr8.100.max
+Apr8.1.r <- Apr8.1 / Apr8.1.max
 
 
 
@@ -142,13 +215,23 @@ plot(Apr12$time[c(3:5)], log(Apr12$"100nmFe"[c(3:5)]), xlab="time (hours)", ylab
      main="T. oceanica 4/12", type="b", col="red")
 points(Apr12$time[c(3:5)], log(Apr12$"1nmFe"[c(3:5)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Apr12.100 <- coef(lm(log(Apr12$"100nmFe"[3:5]) ~ Apr12$time[3:5]))[2]
 Apr12.1 <- coef(lm(log(Apr12$"1nmFe"[3:5]) ~ Apr12$time[3:5]))[2]
+# µ_max
+Apr12.100.max <- coef(lm(log(Apr12$"100nmFe"[1:3]) ~ Apr12$time[1:3]))[2]
+Apr12.1.max <- coef(lm(log(Apr12$"1nmFe"[1:3]) ~ Apr12$time[1:3]))[2]
 # s.e.
 Apr12.100.se <- summary(lm(log(Apr12$"100nmFe"[3:5]) ~ Apr12$time[3:5]))$coefficients[, 2][2]
 Apr12.1.se <- summary(lm(log(Apr12$"1nmFe"[3:5]) ~ Apr12$time[3:5]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Apr12.100.max.se <- summary(lm(log(Apr12$"100nmFe"[1:3]) ~ Apr12$time[1:3]))$coefficients[, 2][2]
+Apr12.1.max.se <- summary(lm(log(Apr12$"1nmFe"[1:3]) ~ Apr12$time[1:3]))$coefficients[, 2][2]
 
+
+### µ / µ_max
+Apr12.100.r <- Apr12.100 / Apr12.100.max
+Apr12.1.r <- Apr12.1 / Apr12.1.max
 
 
 # Apr 28 
@@ -156,13 +239,23 @@ plot(Apr28$time[c(3:6)], log(Apr28$"100nmFe"[c(3:6)]), xlab="time (hours)", ylab
      main="T. oceanica 4/28", type="b", col="red")
 points(Apr28$time[c(3:6)], log(Apr28$"1nmFe"[c(3:6)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 Apr28.100 <- coef(lm(log(Apr28$"100nmFe"[3:6]) ~ Apr28$time[3:6]))[2]
 Apr28.1 <- coef(lm(log(Apr28$"1nmFe"[3:6]) ~ Apr28$time[3:6]))[2]
+# µ_max
+Apr28.100.max <- coef(lm(log(Apr28$"100nmFe"[1:3]) ~ Apr28$time[1:3]))[2]
+Apr28.1.max <- coef(lm(log(Apr28$"1nmFe"[1:3]) ~ Apr28$time[1:3]))[2]
 # s.e.
 Apr28.100.se <- summary(lm(log(Apr28$"100nmFe"[3:6]) ~ Apr28$time[3:6]))$coefficients[, 2][2]
 Apr28.1.se <- summary(lm(log(Apr28$"1nmFe"[3:6]) ~ Apr28$time[3:6]))$coefficients[, 2][2]
+# s.e. (µ_max)
+Apr28.100.max.se <- summary(lm(log(Apr28$"100nmFe"[1:3]) ~ Apr28$time[1:3]))$coefficients[, 2][2]
+Apr28.1.max.se <- summary(lm(log(Apr28$"1nmFe"[1:3]) ~ Apr28$time[1:3]))$coefficients[, 2][2]
 
+
+### µ / µ_max
+Apr28.100.r <- Apr28.100 / Apr28.100.max
+Apr28.1.r <- Apr28.1 / Apr28.1.max
 
 
 # May 2
@@ -170,13 +263,23 @@ plot(May2$time[c(3:6)], log(May2$"100nmFe"[c(3:6)]), xlab="time (hours)", ylab="
      main="T. oceanica 5/2", type="b", col="red")
 points(May2$time[c(3:6)], log(May2$"1nmFe"[c(3:6)]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 May2.100 <- coef(lm(log(May2$"100nmFe"[3:6]) ~ May2$time[3:6]))[2]
 May2.1 <- coef(lm(log(May2$"1nmFe"[3:6]) ~ May2$time[3:6]))[2]
+# µ_max
+May2.100.max <- coef(lm(log(May2$"100nmFe"[1:3]) ~ May2$time[1:3]))[2]
+May2.1.max <- coef(lm(log(May2$"1nmFe"[1:3]) ~ May2$time[1:3]))[2]
 # s.e.
 May2.100.se <- summary(lm(log(May2$"100nmFe"[3:6]) ~ May2$time[3:6]))$coefficients[, 2][2]
 May2.1.se <- summary(lm(log(May2$"1nmFe"[3:6]) ~ May2$time[3:6]))$coefficients[, 2][2]
+# s.e. (µ_max)
+May2.100.max.se <- summary(lm(log(May2$"100nmFe"[1:3]) ~ May2$time[1:3]))$coefficients[, 2][2]
+May2.1.max.se <- summary(lm(log(May2$"1nmFe"[1:3]) ~ May2$time[1:3]))$coefficients[, 2][2]
 
+
+### µ / µ_max
+May2.100.r <- May2.100 / May2.100.max
+May2.1.r <- May2.1 / May2.1.max
 
 
 # May 6
@@ -184,13 +287,23 @@ plot(May6$time[4:6], log(May6$"100nmFe"[4:6]), xlab="time (hours)", ylab="log(ce
      main="T. oceanica 5/6", type="b", col="red")
 points(May6$time[4:6], log(May6$"1nmFe"[4:6]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
-# slopes
+# slopes (µ)
 May6.100 <- coef(lm(log(May6$"100nmFe"[4:6]) ~ May6$time[4:6]))[2]
 May6.1 <- coef(lm(log(May6$"1nmFe"[4:6]) ~ May6$time[4:6]))[2]
+# µ_max
+May6.100.max <- coef(lm(log(May6$"100nmFe"[1:4]) ~ May6$time[1:4]))[2]
+May6.1.max <- coef(lm(log(May6$"1nmFe"[1:4]) ~ May6$time[1:4]))[2]
 # s.e.
 May6.100.se <- summary(lm(log(May6$"100nmFe"[4:6]) ~ May6$time[4:6]))$coefficients[, 2][2]
 May6.1.se <- summary(lm(log(May6$"1nmFe"[4:6]) ~ May6$time[4:6]))$coefficients[, 2][2]
+# s.e. (µ_max)
+May6.100.max.se <- summary(lm(log(May6$"100nmFe"[1:4]) ~ May6$time[1:4]))$coefficients[, 2][2]
+May6.1.max.se <- summary(lm(log(May6$"1nmFe"[1:4]) ~ May6$time[1:4]))$coefficients[, 2][2]
 
+
+### µ / µ_max
+May6.100.r <- May6.100 / May6.100.max
+May6.1.r <- May6.1 / May6.1.max
 
 
 
@@ -205,7 +318,11 @@ slopes.100 <- c(Feb28.100, Mar9.100, Mar13.100, Mar17.100, Mar21.100, Apr4.100, 
 se.100 <- c(Feb28.100.se, Mar9.100.se, Mar13.100.se, Mar17.100.se, Mar21.100.se, Apr4.100.se,
             Apr8.100.se, Apr12.100.se, Apr28.100.se, May2.100.se, May6.100.se)
 
-
+# relative growth rates
+RGR.100 <- c(Feb28.100.r, Mar9.100.r, Mar13.100.r, Mar17.100.r, Mar21.100.r, Apr4.100.r, Apr8.100.r,
+             Apr12.100.r, Apr28.100.r, May2.100.r, May6.100.r)
+# finish this #
+RGR.1 <- c()
 
 slopes.1 <- c(Feb28.1, Mar9.1, Mar13.1, Mar17.1, Mar21.1, Apr4.1, Apr8.1,
               Apr12.1, Apr28.1, May2.1, May6.1)
