@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+*.png
 Copepod Fe Egg Analysis.RData
 TO_slope_xtable.log
 TO_slope_xtable.pdf

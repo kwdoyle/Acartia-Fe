@@ -296,8 +296,8 @@ AIC(seg.fit)
 # add best-fit line & confidence intervals
 seg.line <- broken.line(seg.fit)  # find fitted values
 
-plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for both runs", type="p", pch=16)
+plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="% replete Fe", ylab="mean # eggs",
+     main="Effect of food Fe content on \n A. tonsa egg production", type="p", pch=16)
 lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
 
 # CIs
@@ -311,6 +311,8 @@ lines(Fe.ratios, LL, col="red", lty=2, lwd=2)
 # points.segmented adds the breakpoint on the plot
 points.segmented(seg.fit)
 
+# add legend maybe?
+# legend("topright", c("best fit", "CI", "break point"), col=c("red", "green", "black"), lty=c(1,2), lwd=2, pch=1, pt.cex=1.5)
 
 #=========================
 # Try plotting with ggplot
@@ -322,7 +324,9 @@ ggplot(data=d, aes(x=Fe.ratios, y=treat.means)) +  # add CIs & breakpoint to thi
   theme_bw() +
   geom_line(data=d, aes(x=Fe.ratios, y=seg.line$fit)) +
   ylim(0, 60) +
-  xlab("Treatment (% Replete Fe)" ) + ylab("Mean Number of Eggs") 
+  xlab("Treatment (% Replete Fe)" ) + ylab("Mean Number of Eggs") +
+  geom_point(x=seg.fit$psi.history[[5]], y=seg.line$fit[4])  # this is the breakpoint
+# don't know how to make the breakpoint look the same as from 'points.segmented'
   
 
 #=================
