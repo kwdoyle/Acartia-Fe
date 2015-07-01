@@ -434,8 +434,8 @@ seg.line.1 <- broken.line(seg.fit.1)
 AIC(seg.fit.1)
 
 # plot points & best-fit line
-plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for Run 1", type="p", pch=16)
+plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="% replete Fe", ylab="mean # eggs",
+     main="Mean of each treatment \n across all wells for Run 1", type="p", pch=16)
 lines(colnames(run1.sums), seg.line.1$fit, col="red", lwd=2)
 
 # CIs
@@ -532,8 +532,8 @@ seg.line.2 <- broken.line(seg.fit.2)
 AIC(seg.fit.2)
 
 # plot points & best-fit line
-plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="treatment", ylab="mean # eggs",
-     main="Mean of each treatment across all wells \n for Run 2", type="p", pch=16)
+plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="% replete Fe", ylab="mean # eggs",
+     main="Mean of each treatment \n across all wells for Run 2", type="p", pch=16)
 lines(colnames(run2.sums), seg.line.2$fit, col="red", lwd=2)
 
 # CIs
