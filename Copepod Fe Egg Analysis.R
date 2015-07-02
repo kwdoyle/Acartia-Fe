@@ -84,22 +84,23 @@ run2.day5 <- Avgs(run2.day5)
 #==========================================
 plot(colnames(run1.day1), run1.day1[7,], ylim=c(0, 20), xlab="% replete Fe", ylab="mean # eggs",
      main="Individual day egg production \n for run 1", sub="not pre-screened for egg production",
-     type="b", pch=16, col="red")
+     type="b", pch=16, lty=1, lwd=2, col="red")
 # each dp = mean of all wells for each treatment
 points(colnames(run1.day2), run1.day2[7,], ylim=c(0, 10), xlab="treatment", ylab="avg # eggs",
-       main="Run 1 - Day 2", type="b", pch=16, col="blue")
+       main="Run 1 - Day 2", type="b", pch=15, lty=2, lwd=2, col="blue")
 
 points(colnames(run1.day3), run1.day3[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
-       main="Run 1 - Day 3", type="b", pch=16, col="green")
+       main="Run 1 - Day 3", type="b", pch=17, lty=6, lwd=2, col="green")
 
 points(colnames(run1.day4), run1.day4[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
-       main="Run 1 - Day 4", type="b", pch=16, col="brown")
+       main="Run 1 - Day 4", type="b", pch=18, lty=4, lwd=2, col="brown")
 
 points(colnames(run1.day5), run1.day5[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
-       main="Run 1 - Day 5", type="b", pch=16, col="orange")
+       main="Run 1 - Day 5", type="b", pch=25, lty=5, lwd=2, col="orange")
 
 legend("topleft", c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5"),
-       col=c("red", "blue", "green", "brown", "orange"), lwd=3)
+       col=c("red", "blue", "green", "brown", "orange"), lwd=3, lty=c(1, 2, 6, 4, 5),
+       pch=c(16, 15, 17, 18, 25))
 
 # there appears to be no pattern to the frequency of egg production between days. In fact,
 # they appear to produce more eggs after the 2nd day.
@@ -117,22 +118,23 @@ legend("topleft", c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5"),
 #==========================================
 plot(colnames(run2.day1), run2.day1[7,], ylim=c(0, 30), xlab="% replete Fe", ylab="mean # eggs",
      main="Individual day egg production \n for run 2", sub="pre-screened for egg production",
-     type="b", pch=16, col="red")
+     type="b", pch=16, lty=1, lwd=2, col="red")
 # each dp = mean of all wells for each treatment
 points(colnames(run2.day2), run2.day2[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
-       main="Run 2 - Day 2", type="b", pch=16, col="blue")
+       main="Run 2 - Day 2", type="b", pch=15, lty=2, lwd=2, col="blue")
 
 points(colnames(run2.day3), run2.day3[7,], ylim=c(0, 8), xlab="treatment", ylab="avg # eggs",
-       main="Run 2 - Day 3", type="b", pch=16, col="green")
+       main="Run 2 - Day 3", type="b", pch=17, lty=6, lwd=2, col="green")
 
 points(colnames(run2.day4), run2.day4[7,], ylim=c(0, 10), xlab="treatment", ylab="avg # eggs",
-       main="Run 2 - Day 4", type="b", pch=16, col="brown")
+       main="Run 2 - Day 4", type="b", pch=18, lty=4, lwd=2, col="brown")
 
 points(colnames(run2.day5), run2.day5[7,], ylim=c(0, 10), xlab="treatment", ylab="avg # eggs",
-       main="Run 2 - Day 5", type="b", pch=16, col="orange")
+       main="Run 2 - Day 5", type="b", pch=25, lty=5, lwd=2, col="orange")
 
 legend("topleft", c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5"),
-       col=c("red", "blue", "green", "brown", "orange"), lwd=3)
+       col=c("red", "blue", "green", "brown", "orange"), lwd=3, lty=c(1, 2, 6, 4, 5),
+       pch=c(16, 15, 17, 18, 25))
 
 # after the 1st day, they seem to produce less eggs overall for each treatment.
 # this could be due to the fact that, by pre-screening, we were choosing copepods late in
