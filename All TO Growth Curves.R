@@ -10,6 +10,7 @@ Apr28 <- read.csv("/Users/kevin/Research/Experiment/Data/New CSVs/TO Growth/TO 4
 May2  <- read.csv("/Users/kevin/Research/Experiment/Data/New CSVs/TO Growth/TO 5-2.csv", row.names=1)
 May6  <- read.csv("/Users/kevin/Research/Experiment/Data/New CSVs/TO Growth/TO Fe Growth.csv", row.names=1)
 
+# remove blank row with text indicating the values to the right are diameters
 Feb28 <- Feb28[,-4]
 Mar9 <- Mar9[,-4]
 Mar13 <- Mar13[,-4]
@@ -36,6 +37,9 @@ colnames(May6) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 
 ### Try fitting the segmented model to all of these and take the slopes of before & after the breakpoint
 # and take relative growth rates. RGR = µ/µ_max
+### Or just find RGRs by using µ_max as the time where both are growing maximally and µ as the time
+# when the 1 nM culture splits off.
+### All points where the cultures reach stationary phase are not considered.
 #==================================================================================
 # take growth of both from ≈3rd day until before the 100nM reaches stationary phase
 #==================================================================================
@@ -335,7 +339,7 @@ RGR.1 <- c(Feb28.1.r, Mar9.1.r, Mar13.1.r, Mar17.1.r, Mar21.1.r, Apr4.1.r, Apr8.
 
 
 
-# make a nicer table of these slopes to put in the paper. use R Markdown.
+# make a nicer table of these slopes to put in the paper. use xtable instead of Rmarkdown.
 TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
 
 row.names(TO.slopes) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
@@ -389,7 +393,7 @@ RGR.table <- format(TO.RGR, digits=3, scientific=T)
 # generate LaTeX code for table
 print(xtable(TO.RGR))
 
-
+# the LaTeX for both tables are combined in the tex file.
 
 
 
@@ -397,4 +401,3 @@ print(xtable(TO.RGR))
 # Try fitting model to each growth curve and see where the breakpoint (point of Fe limitation) is
 # ...or maybe not, since I have to not include the part in stationary phase, and this would be a lot of
 # potentially pointless model fitting to every single growth curve.
-
