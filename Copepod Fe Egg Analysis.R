@@ -51,7 +51,7 @@ colnames(run2.day5) <- c("1", "0.8", "0.7", "0.6", "0.4", "0.2", "0")
 #================================
 ## now do individual day analyses
 #================================
-# function to calculate means of each treatment while removing any missing values
+# function to calculate means of all wells for each treatment while removing any missing values
 Avgs <- function(data) {
   newrow <- NULL
   for (i in 1:ncol(data)) {
@@ -77,13 +77,15 @@ run2.day5 <- Avgs(run2.day5)
 
 ##### Add confidence intervals to these? (i.e., same as error bars?)
 # going to need to use 'predict' function to make the actual best fit line
+### Or, no, because I'm not doing any analysis of these data; these are just the means of each treatment.
+# I guess I could add the std errors of each mean, but is it necessary?
 #==========================================
 # Plot of means of each treatment for Run 1
 #==========================================
-plot(colnames(run1.day1), run1.day1[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
-     main="Run 1 \n not pre-screened for egg production",
-     sub="each dp = mean of all wells for each treatment", type="b", pch=16, col="red")
-
+plot(colnames(run1.day1), run1.day1[7,], ylim=c(0, 20), xlab="% replete Fe", ylab="mean # eggs",
+     main="Individual day egg production \n for run 1", sub="not pre-screened for egg production",
+     type="b", pch=16, col="red")
+# each dp = mean of all wells for each treatment
 points(colnames(run1.day2), run1.day2[7,], ylim=c(0, 10), xlab="treatment", ylab="avg # eggs",
        main="Run 1 - Day 2", type="b", pch=16, col="blue")
 
@@ -113,10 +115,10 @@ legend("topleft", c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5"),
 #==========================================
 # Plot of means of each treatment for Run 2
 #==========================================
-plot(colnames(run2.day1), run2.day1[7,], ylim=c(0, 30), xlab="treatment", ylab="avg # eggs",
-     main="Run 2 \n pre-screened for egg production",
-     sub="each dp = mean of all wells for each treatment", type="b", pch=16, col="red")
-
+plot(colnames(run2.day1), run2.day1[7,], ylim=c(0, 30), xlab="% replete Fe", ylab="mean # eggs",
+     main="Individual day egg production \n for run 2", sub="pre-screened for egg production",
+     type="b", pch=16, col="red")
+# each dp = mean of all wells for each treatment
 points(colnames(run2.day2), run2.day2[7,], ylim=c(0, 20), xlab="treatment", ylab="avg # eggs",
        main="Run 2 - Day 2", type="b", pch=16, col="blue")
 
@@ -140,6 +142,8 @@ legend("topleft", c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5"),
 # trend is still seen in the means of each treatment across all wells for the 2nd run
 
 
+
+
 library(plyr)
 # combine days from each treatment
 run1 <- list(day1=run1.day1, day2=run1.day2, day3=run1.day3, day4=run1.day4, day5=run1.day5)
@@ -153,7 +157,7 @@ run2.means <- aaply(laply(run2, as.matrix), c(2, 3), mean, na.rm=TRUE)
 run1.means <- run1.means[-7,]
 run2.means <- run2.means[-7,]
 
-
+#----------------------------
 
 # calculate sums across each well for each treatment
 run1.sums <- aaply(laply(run1, as.matrix), c(2, 3), sum, na.rm=TRUE)
@@ -230,6 +234,8 @@ std.errs.1 <- c("1"=sd(run1.sums[,1], na.rm=TRUE) / sqrt(length(run1.sums[,1]) -
 plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="mean # eggs",
      main="Mean of each treatment across all wells \n for Run 1", type="b", pch=16)
 # this works to plot error bars.
+arrows(as.numeric(colnames(run1.sums)), treat.means.1-std.errs.1, as.numeric(colnames(run1.sums)), treat.means.1+std.errs.1, 
+       length=0.05, angle=90, code=3)
 # error bars are high for some most likely due to the high variability between individuals.
 # this is why taking the mean of all individuals is the preferred option? it kind of softens the high stochasticity
 #==============================================================================
@@ -239,14 +245,8 @@ plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="treatment", ylab="
 
 # yes, because, when fitting the model, the uncertainty now is the std error in fitting the line
 # to these data points, so the original std errors of each mean "go away"
-
-# just need to find out what model to fit...
-# need to make sure this model saturates to a specific number (max fecundity)
-
-
 #==============================================================================
-arrows(as.numeric(colnames(run1.sums)), treat.means.1-std.errs.1, as.numeric(colnames(run1.sums)), treat.means.1+std.errs.1, 
-       length=0.05, angle=90, code=3)
+
 
 
 
@@ -327,7 +327,8 @@ ggplot(data=d, aes(x=Fe.ratios, y=treat.means)) +  # add CIs & breakpoint to thi
   xlab("Treatment (% Replete Fe)" ) + ylab("Mean Number of Eggs") +
   geom_point(x=seg.fit$psi.history[[5]], y=seg.line$fit[4])  # this is the breakpoint
 # don't know how to make the breakpoint look the same as from 'points.segmented'
-  
+# maybe just use qplot?  
+
 
 #=================
 # some extra stuff
@@ -341,9 +342,6 @@ summary(seg.fit)$psi  # estimate for treatment breakpoint & its std error
 summary(seg.fit)$psi[2]  # estimate
 summary(seg.fit)$psi[3]  # s.e.
 
-# CI on the breakpoint itself. uses the Delta method for the ratio of two random variables.
-### how is the upper limit on this so high? ###
-confint.segmented(seg.fit)
 
 # check residuals
 plot(Fe.ratios, residuals(seg.fit))
@@ -617,15 +615,35 @@ plot(all.treat.2, residuals(seg.fit.all.2))
 
 
 
-### CIs for breakpoints of Run 2 and both runs together
-confint(seg.fit)  # both runs
-confint(seg.fit.2)  # run 2
+### CIs on each breakpoint itself. uses the Delta method for the ratio of two random variables.
+### how is the upper limit on this so high? ###
+bp.comb <- confint.segmented(seg.fit)$x[1]
+bp.r1 <- confint.segmented(seg.fit.1)$x[1]
+bp.r2 <- confint.segmented(seg.fit.2)$x[1]
+# compare size of CIs of each breakpoint for run 1, run 2, and combined
+comb <- confint.segmented(seg.fit)$x[3]-confint.segmented(seg.fit)$x[2]  # combined
+r1 <- confint.segmented(seg.fit.1)$x[3]-confint.segmented(seg.fit.1)$x[2]  # run 1
+r2 <- confint.segmented(seg.fit.2)$x[3]-confint.segmented(seg.fit.2)$x[2]  # run 2
+
+### make a table
+CI.sizes <- data.frame("break point"=c(bp.comb, bp.r1, bp.r2), "CI size"=c(comb, r1, r2))
+row.names(CI.sizes) <- c("both runs", "run 1", "run 2")
+# Run 2 does have the smallest CI on its breakpoint, but the run 1 data still is informative
+# (eg, the 0 Fe treatment has lower egg production, ie, might not have been as much effect from Fe
+# contamination), so it should be included.
+
+
 
 
 # Vector of AIC values
 AICs <- c("all mean"=AIC(seg.fit), "run 1 mean"=AIC(seg.fit.1), "run 2 mean"=AIC(seg.fit.2),
           "all points"=AIC(seg.fit.all), "run 1 points"=AIC(seg.fit.all.1), "run 2 points"=AIC(seg.fit.all.2))
+# Run 2 also has the lowest AIC value, but the combined model is probably better for the same reasons above
 
+# AICs as a data frame
+AIC.df <- as.data.frame(matrix(AICs, nrow=1, ncol=6))
+colnames(AIC.df) <- c("all mean", "run 1 mean", "run 2 mean", "all points", "run 1 points", "run 2 points")
+row.names(AIC.df) <- c("AIC")
 
 
 
