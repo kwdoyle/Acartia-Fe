@@ -634,6 +634,12 @@ row.names(CI.sizes) <- c("both runs", "run 1", "run 2")
 # (eg, the 0 Fe treatment has lower egg production, ie, might not have been as much effect from Fe
 # contamination), so it should be included.
 
+# Also, Run 1's large CI is mostly due to the 0.7 dp. It otherwise looks very good.
+# LaTeX table for CI.sizes:
+library(xtable)
+
+xtable(CI.sizes)
+### Try calculating the influence of the 0.7 dp for Run 1. ###
 
 
 
@@ -647,7 +653,8 @@ AIC.df <- as.data.frame(matrix(AICs, nrow=1, ncol=6))
 colnames(AIC.df) <- c("all mean", "run 1 mean", "run 2 mean", "all points", "run 1 points", "run 2 points")
 row.names(AIC.df) <- c("AIC")
 
-
+# LaTeX table for AICs
+xtable(AIC.df)
 
 #===========
 # C:N Ratios

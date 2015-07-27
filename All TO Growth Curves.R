@@ -311,6 +311,16 @@ May6.1.r <- May6.1 / May6.1.max
 
 
 
+# Plot Mar 9 all points just for a reference
+plot(Mar9$time, log(Mar9$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL)",
+                    main="T. oceanica 3/9", type="b", col="red")
+points(Mar9$time, log(Mar9$"1nmFe"), type="b", col="blue")
+legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
+
+
+
+
+
 # Maybe do plots like on p.92 of Ecological Stoichiometry for TO growth & do relative growth rates
 # So just calculate slops from points 1:3 and use them as the max growth rate.
 #=============================================
