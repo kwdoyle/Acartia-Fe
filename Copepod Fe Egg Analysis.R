@@ -663,3 +663,10 @@ xtable(AIC.df)
 Egg.C <- 45.7  # ng/egg
 Egg.N <- 9.1  # ng/egg
 Egg.CtoN <- Egg.C / Egg.N
+
+
+#==================
+# Expected Response
+#==================
+plot(c(1:7), c(1,2,3,4,4,4,4), ylim=c(1,5), type="l", lwd=2, xaxt="n", yaxt="n",
+     main="Expected Response", xlab="Fe treatment", ylab="# eggs", mgp=c(2, 2, 2))
