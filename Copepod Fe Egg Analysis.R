@@ -664,6 +664,9 @@ Egg.C <- 45.7  # ng/egg
 Egg.N <- 9.1  # ng/egg
 Egg.CtoN <- Egg.C / Egg.N
 
+# From Sunda & Huntsman
+# Fetot(nM) of 1.2:: Fe:C = should be 2 for 1 nM Fe
+# Fetot(nM) of 101:: Fe:C = 34.3 ; Cell Fe(µmol/L): 336
 
 #==================
 # Expected Response
