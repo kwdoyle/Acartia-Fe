@@ -32,14 +32,21 @@ colnames(replete.FM.1000.cells) <- c("Min","Max","Mode","Average")
 
 
 # Plots
-plot(deplete.FM[,1], as.numeric(deplete.FM.1000.cells$Average), main-"Mean Fm / 1000 cells", ylim=c(0.1, 0.5), type="n")
-points(replete.FM[,1], as.numeric(replete.FM.1000.cells$Average), pch=16, type="l")
-points(deplete.FM[,1], as.numeric(deplete.FM.1000.cells$Average), ylim=c(0.1, 0.5))
-# this doesn't work too well.
-
 Dates <- deplete.FM[,1]
-Values <- as.numeric(deplete.FM.1000.cells$Average)
-plot(Values ~ Dates)
 
-library(ggplot2)
-qplot(deplete.FM[,1], as.numeric(deplete.FM.1000.cells$Average)) + geom_point(replete.FM[,1], replete.FM.1000.cells)
+Values <- as.numeric(deplete.FM.1000.cells$Average)
+Values2 <- as.numeric(replete.FM.1000.cells$Average)
+Values3 <- deplete.FvFm$Average
+Values4 <- replete.FvFm$Average
+
+# Fv/Fm
+plot.default(Values3 ~ Dates, xaxt="n", ylab="Fv/ Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
+             type="l", lwd="3", col="blue")
+points(Values4 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+axis(side=1, at=c(1,2,3,4), labels=Dates)
+
+# Fm per 1000 cells
+plot.default(Values ~ Dates, xaxt="n", ylab="Fm / 1000 cells", xlab="", main="Mean Fm Per 1000 Cells",
+             ylim=c(0.1, 0.5), type="l", lwd="3", col="blue")
+points(Values2 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+axis(side=1, at=c(1,2,3,4), labels=Dates)
