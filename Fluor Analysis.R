@@ -5,13 +5,14 @@ deplete.FM <- read.csv("/Users/kevin/Research/Experiment/Data/Fluor Data CSVs/Fl
 replete.FM <- read.csv("/Users/kevin/Research/Experiment/Data/Fluor Data CSVs/Fluor Data/Fm-100 nM Fm.csv")
 
 
+# Fv/Fm = (Fm - F0) / Fm
 deplete.FvFm <- (deplete.FM[,-1] - deplete.F0[,-1]) / deplete.FM[,-1]
 replete.FvFm <- (replete.FM[,-1] - replete.F0[,-1]) / replete.FM[,-1]
 
 
 # Fm per 1000 cells
 # Deplete
-# This uses cell/mL data for these cultures from "All TO Growth Curves.R"
+# This uses cell/mL data from the Feb28 cultures from "All TO Growth Curves.R"
 row1.d <- (deplete.FM[1,-1] / Feb28$"1nmFe"[4]) * 1000
 row2.d <- (deplete.FM[2,-1] / Feb28$"1nmFe"[5]) * 1000
 row3.d <- (deplete.FM[3,-1] / Feb28$"1nmFe"[6]) * 1000
@@ -41,12 +42,16 @@ Values4 <- replete.FvFm$Average
 
 # Fv/Fm
 plot.default(Values3 ~ Dates, xaxt="n", ylab="Fv/ Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
-             type="l", lwd="3", col="blue")
+             type="l", lwd="3", col="blue", yaxt="n")
 points(Values4 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+axis(side=2, at=seq(from=0.3, to=0.7, by=0.05), las=1)
 axis(side=1, at=c(1,2,3,4), labels=Dates)
+legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
 
 # Fm per 1000 cells
 plot.default(Values ~ Dates, xaxt="n", ylab="Fm / 1000 cells", xlab="", main="Mean Fm Per 1000 Cells",
-             ylim=c(0.1, 0.5), type="l", lwd="3", col="blue")
+             ylim=c(0.1, 0.5), type="l", lwd="3", col="blue", yaxt="n")
 points(Values2 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+axis(side=2, at=seq(0.1, to=0.5, by=0.05), las=1)
 axis(side=1, at=c(1,2,3,4), labels=Dates)
+legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
