@@ -41,7 +41,7 @@ values3 <- deplete.FvFm$Average
 values4 <- replete.FvFm$Average
 
 # Fv/Fm
-plot.default(values3 ~ dates, xaxt="n", ylab="Fv/ Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
+plot.default(values3 ~ dates, xaxt="n", ylab="Fv / Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
              type="l", lwd="3", col="blue", yaxt="n")
 points(values4 ~ dates, xaxt="n", type="l", lwd="3", col="red")
 axis(side=2, at=seq(from=0.3, to=0.7, by=0.05), las=1)
@@ -57,4 +57,4 @@ axis(side=1, at=c(1,2,3,4), labels=dates)
 legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
 
 # The decrease of Fm in the replete culture from 3/5 to 3/6 is due to the culture reaching stationary phase.
-# The earlier decrease of Fm for the deplete culture is presumable due to being Fe stressed.
+# The earlier decrease of Fm for the deplete culture is presumably due to being Fe stressed.
