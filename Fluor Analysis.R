@@ -33,25 +33,28 @@ colnames(replete.FM.1000.cells) <- c("Min","Max","Mode","Average")
 
 
 # Plots
-Dates <- deplete.FM[,1]
+dates <- deplete.FM[,1]
 
-Values <- as.numeric(deplete.FM.1000.cells$Average)
-Values2 <- as.numeric(replete.FM.1000.cells$Average)
-Values3 <- deplete.FvFm$Average
-Values4 <- replete.FvFm$Average
+values <- as.numeric(deplete.FM.1000.cells$Average)
+values2 <- as.numeric(replete.FM.1000.cells$Average)
+values3 <- deplete.FvFm$Average
+values4 <- replete.FvFm$Average
 
 # Fv/Fm
-plot.default(Values3 ~ Dates, xaxt="n", ylab="Fv/ Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
+plot.default(values3 ~ dates, xaxt="n", ylab="Fv/ Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
              type="l", lwd="3", col="blue", yaxt="n")
-points(Values4 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+points(values4 ~ dates, xaxt="n", type="l", lwd="3", col="red")
 axis(side=2, at=seq(from=0.3, to=0.7, by=0.05), las=1)
-axis(side=1, at=c(1,2,3,4), labels=Dates)
+axis(side=1, at=c(1,2,3,4), labels=dates)
 legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
 
 # Fm per 1000 cells
-plot.default(Values ~ Dates, xaxt="n", ylab="Fm / 1000 cells", xlab="", main="Mean Fm Per 1000 Cells",
+plot.default(values ~ dates, xaxt="n", ylab="Fm / 1000 cells", xlab="", main="Mean Fm Per 1000 Cells",
              ylim=c(0.1, 0.5), type="l", lwd="3", col="blue", yaxt="n")
-points(Values2 ~ Dates, xaxt="n", type="l", lwd="3", col="red")
+points(values2 ~ dates, xaxt="n", type="l", lwd="3", col="red")
 axis(side=2, at=seq(0.1, to=0.5, by=0.05), las=1)
-axis(side=1, at=c(1,2,3,4), labels=Dates)
+axis(side=1, at=c(1,2,3,4), labels=dates)
 legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
+
+# The decrease of Fm in the replete culture from 3/5 to 3/6 is due to the culture reaching stationary phase.
+# The earlier decrease of Fm for the deplete culture is presumable due to being Fe stressed.
