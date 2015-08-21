@@ -41,6 +41,7 @@ values3 <- deplete.FvFm$Average
 values4 <- replete.FvFm$Average
 
 # Fv/Fm
+# Fm is maximal fluorescence (reaffirm this)
 plot.default(values3 ~ dates, xaxt="n", ylab="Fv / Fm", xlab="", main="Mean Fv / Fm", ylim=c(0.3, 0.7),
              type="l", lwd="3", col="blue", yaxt="n")
 points(values4 ~ dates, xaxt="n", type="l", lwd="3", col="red")

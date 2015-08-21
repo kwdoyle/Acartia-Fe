@@ -295,6 +295,9 @@ seg.fit <- segmented(out.lm, seg.Z=~x, psi=list(x=c(0.6)),  # this finds the sam
                      control=seg.control(display=FALSE))
 AIC(seg.fit)
 
+# 'x' in this is referring to the mean number of eggs. It is calculated to be 42.4 (p=0.0203)
+summary(seg.fit)
+
 # add best-fit line & confidence intervals
 seg.line <- broken.line(seg.fit)  # find fitted values
 
