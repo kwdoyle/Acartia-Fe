@@ -403,6 +403,8 @@ seg.fit.all <- segmented(all.lm, seg.Z=~x2, psi=list(x2=c(0.6)),
 seg.line.all <- broken.line(seg.fit.all)
 AIC(seg.fit.all)
 
+summary(seg.fit.all)
+
 # plot all the data points & the best-fit line
 plot(all.treat, all.pts, pch=16, xlab="treatment", ylab="# of eggs",
      main="Sum of eggs across each well \n for each treatment")
@@ -435,6 +437,8 @@ seg.fit.1 <- segmented(lm.1, seg.Z=~x3, psi=list(x3=c(0.6)),
                        control=seg.control(display=FALSE))
 seg.line.1 <- broken.line(seg.fit.1)
 AIC(seg.fit.1)
+
+summary(seg.fit.1)
 
 # plot points & best-fit line
 plot(colnames(run1.sums), treat.means.1, ylim=c(0, 80), xlab="% replete Fe", ylab="mean # eggs",
@@ -498,6 +502,8 @@ seg.fit.all.1 <- segmented(all.lm.1, seg.Z=~x5, psi=list(x5=c(0.6)),
 seg.line.all.1 <- broken.line(seg.fit.all.1)
 AIC(seg.fit.all.1)
 
+summary(seg.fit.all.1)
+
 # plot all the data points & the best-fit line
 plot(all.treat.1, all.pts.1, pch=16, xlab="treatment", ylab="# of eggs",
      main="Sum of eggs across each well for each \n treatment for Run 1")
@@ -533,6 +539,8 @@ seg.fit.2 <- segmented(lm.2, seg.Z=~x4, psi=list(x4=c(0.6)),
                        control=seg.control(display=FALSE))
 seg.line.2 <- broken.line(seg.fit.2)
 AIC(seg.fit.2)
+
+summary(seg.fit.2)
 
 # plot points & best-fit line
 plot(colnames(run2.sums), treat.means.2, ylim=c(0, 60), xlab="% replete Fe", ylab="mean # eggs",
@@ -597,6 +605,8 @@ seg.fit.all.2 <- segmented(all.lm.2, seg.Z=~x6, psi=list(x6=c(0.6)),
                            control=seg.control(display=FALSE))
 seg.line.all.2 <- broken.line(seg.fit.all.2)
 AIC(seg.fit.all.2)
+
+summary(seg.fit.all.2)
 
 # plot all the data points & the best-fit line
 plot(all.treat.2, all.pts.2, pch=16, xlab="treatment", ylab="# of eggs",
