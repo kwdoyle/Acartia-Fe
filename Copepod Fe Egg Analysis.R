@@ -352,12 +352,33 @@ summary(seg.fit)$psi[3]  # s.e.
 plot(Fe.ratios, residuals(seg.fit))
 # analyze residuals; do a rank-order plot as well
 
-
-# to calculate Fe:C ratio:
+#====================================
+# to calculate breakpoint Fe:C ratio:
+#====================================
 #minimum + 0.6*(difference betwn max and min) where min=deplete and max=replete
 # ≈ 20
+# min and max values are from Sunda & Huntsman
+# min and max are the Fe:C for ≈1nM and ≈100nM total Fe
+# the min value does not have as much weight as the max value
+Min <- 2
+Max <- 34.3
+Breakpoint <- summary(seg.fit)$psi[2]
 
+FeC.Break <- Min + Breakpoint * (Max - Min)
+FeC.1 <- Min + 1 * (Max - Min)
+FeC.0.8 <- Min + 0.8 * (Max - Min)
+FeC.0.7 <- Min + 0.7 * (Max - Min)
+FeC.0.6 <- Min + 0.6 * (Max - Min)
+FeC.0.4 <- Min + 0.4 * (Max - Min)
+FeC.0.2 <- Min + 0.2 * (Max - Min)
+FeC.0.0 <- Min + 0.0 * (Max - Min)
 
+# table of all treatment ratios and their respective Fe:C ratios
+FeC.table <- data.frame(row.names=c("1", "0.8", "0.7", "Brkpt", "0.6", "0.4", "0.2", "0.0"),
+                        "Fe:C"=c(FeC.1, FeC.0.8, FeC.0.7, FeC.Break, FeC.0.6, FeC.0.4, FeC.0.2, FeC.0.0))
+
+library(xtable)
+xtable(FeC.table)
 
 #=======================================================================================
 # Plotting all the data points instead of just their means and fitting the model to that.
@@ -648,9 +669,8 @@ row.names(CI.sizes) <- c("both runs", "run 1", "run 2")
 # contamination), so it should be included.
 
 # Also, Run 1's large CI is mostly due to the 0.7 dp. It otherwise looks very good.
-# LaTeX table for CI.sizes:
-library(xtable)
 
+# LaTeX table for CI.sizes:
 xtable(CI.sizes)
 ### Try calculating the influence of the 0.7 dp for Run 1. ###
 

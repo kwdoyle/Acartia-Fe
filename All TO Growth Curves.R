@@ -40,6 +40,11 @@ colnames(May6) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 ### Or just find RGRs by using µ_max as the time where both are growing maximally and µ as the time
 # when the 1 nM culture splits off.
 ### All points where the cultures reach stationary phase are not considered.
+
+#############
+############# Compare just the slopes from after the breakpoint to see if they all consistantly differ
+#############
+
 #==================================================================================
 # take growth of both from ≈3rd day until before the 100nM reaches stationary phase
 #==================================================================================
@@ -287,9 +292,9 @@ May2.1.r <- May2.1 / May2.1.max
 
 
 # May 6
-plot(May6$time[4:6], log(May6$"100nmFe"[4:6]), xlab="time (hours)", ylab="log(cells / mL)",
+plot(May6$time[1:6], log(May6$"100nmFe"[1:6]), xlab="time (hours)", ylab="log(cells / mL)",
      main="T. oceanica 5/6", type="b", col="red")
-points(May6$time[4:6], log(May6$"1nmFe"[4:6]), type="b", col="blue")
+points(May6$time[1:6], log(May6$"1nmFe"[1:6]), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
 # slopes (µ)
 May6.100 <- coef(lm(log(May6$"100nmFe"[4:6]) ~ May6$time[4:6]))[2]
