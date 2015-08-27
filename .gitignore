@@ -3,9 +3,6 @@
 .RData
 *.png
 Copepod Fe Egg Analysis.RData
-TO_slope_xtable.log
-TO_slope_xtable.pdf
-TO_slope_xtable.synctex.gz
 *.log
 *.pdf
 *.gz
