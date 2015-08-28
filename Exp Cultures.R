@@ -140,7 +140,7 @@ plot(exp13$time, log(exp13$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL
 points(exp13$time, log(exp13$"1nmFe"), type="b", col="blue")
 legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
 
-
+hi
 # 6/3
 plot(exp14$time, log(exp14$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL)",
      main="Experiment Culture # 14", type="b", col="red",
