@@ -307,7 +307,7 @@ lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
 
 # CIs
 UL <- seg.line$fit + 1.96 * seg.line$se.fit  # 1.96 = qnorm( 1-(0.05/2) )
-LL <- seg.line$fit - 1.96 * seg.line$se.fit
+LL <- seg.line$fit - 1.96 * seg.line$se.fit  # ..we ARE assuming eggs are normally distributed, right?
 
 # add to plot
 lines(Fe.ratios, UL, col="red", lty=2, lwd=2)
@@ -427,7 +427,7 @@ AIC(seg.fit.all)
 summary(seg.fit.all)
 
 # plot all the data points & the best-fit line
-plot(all.treat, all.pts, pch=16, xlab="treatment", ylab="# of eggs",
+plot(all.treat, all.pts, pch=16, xlab="% replete Fe", ylab="mean # eggs",
      main="Sum of eggs across each well \n for each treatment")
 lines(all.treat, seg.line.all$fit, col="red", lwd=2)
 
@@ -656,22 +656,83 @@ plot(all.treat.2, residuals(seg.fit.all.2))
 bp.comb <- confint.segmented(seg.fit)$x[1]
 bp.r1 <- confint.segmented(seg.fit.1)$x[1]
 bp.r2 <- confint.segmented(seg.fit.2)$x[1]
+
+# break points for plots using all data points instead of means
+bp.comb.all <- confint.segmented(seg.fit.all)$x[1]
+bp.r1.all <- confint.segmented(seg.fit.all.1)$x[1]
+bp.r2.all <- confint.segmented(seg.fit.all.2)$x[1]
+
+
+# calculate actual CIs
+comb_l <- confint.segmented(seg.fit)$x[2]
+comb_u <- confint.segmented(seg.fit)$x[3]
+comb.all_l <- confint.segmented(seg.fit.all)$x[2]
+comb.all_u <- confint.segmented(seg.fit.all)$x[3]
+
+r1_l <- confint.segmented(seg.fit.1)$x[2]
+r1_u <- confint.segmented(seg.fit.1)$x[3]
+r1.all_l <- confint.segmented(seg.fit.all.1)$x[2]
+r1.all_u <- confint.segmented(seg.fit.all.1)$x[3]
+
+r2_l <- confint.segmented(seg.fit.2)$x[2]
+r2_u <- confint.segmented(seg.fit.2)$x[3]
+r2.all_l <- confint.segmented(seg.fit.all.2)$x[2]
+r2.all_u <- confint.segmented(seg.fit.all.2)$x[3]
+
+
+
 # compare size of CIs of each breakpoint for run 1, run 2, and combined
-comb <- confint.segmented(seg.fit)$x[3]-confint.segmented(seg.fit)$x[2]  # combined
-r1 <- confint.segmented(seg.fit.1)$x[3]-confint.segmented(seg.fit.1)$x[2]  # run 1
-r2 <- confint.segmented(seg.fit.2)$x[3]-confint.segmented(seg.fit.2)$x[2]  # run 2
+comb <- comb_u - comb_l  # combined
+r1 <- r1_u - r1_l  # run 1
+r2 <- r2_u - r2_l  # run 2
+
+# CIs for breakpoints using all data points
+comb.all <- comb.all_u - comb.all_l  # combined
+r1.all <- r1.all_u - r1.all_l  # run 1
+r2.all <- r2.all_u - r2.all_l  # run 2
+
+
 
 ### make a table
 CI.sizes <- data.frame("break point"=c(bp.comb, bp.r1, bp.r2), "CI size"=c(comb, r1, r2))
 row.names(CI.sizes) <- c("both runs", "run 1", "run 2")
+colnames(CI.sizes) <- c("break point", "CI size")
 # Run 2 does have the smallest CI on its breakpoint, but the run 1 data still is informative
 # (eg, the 0 Fe treatment has lower egg production, ie, might not have been as much effect from Fe
 # contamination), so it should be included.
 
 # Also, Run 1's large CI is mostly due to the 0.7 dp. It otherwise looks very good.
 
+# table including plots using just means and all data points
+CI.sizes.all <- data.frame("break point"=c(bp.comb, bp.comb.all, bp.r1, bp.r1.all, bp.r2, bp.r2.all),
+                           "CI size"=c(comb, comb.all, r1, r1.all, r2, r2.all))
+row.names(CI.sizes.all) <- c("both runs", "both runs all", "run 1", "run 1 all", "run 2", "run 2 all")
+colnames(CI.sizes.all) <- c("break point", "CI size")
+
+
+# table with all runs w/ all data points w/ actual CIs
+CI.table.full <- data.frame("break point"=c(bp.comb, bp.comb.all, bp.r1, bp.r1.all, bp.r2, bp.r2.all),
+                   "CI lower"=c(comb_l, comb.all_l, r1_l, r1.all_l, r2_l, r2.all_l),
+                   "CI upper"=c(comb_u, comb.all_u, r1_u, r1.all_u, r2_u, r2.all_u))
+
+row.names(CI.table.full) <- c("both runs", "both runs all", "run 1", "run 1 all", "run 2", "run 2 all")
+colnames(CI.table.full) <- c("break point", "CI lower", "CI upper")
+
+
+
+
+
+
 # LaTeX table for CI.sizes:
-xtable(CI.sizes)
+xtable(CI.sizes, align=c("l","c","c"), digits=3)
+
+# LaTeX table for CI sizes w/ all data point plots:
+xtable(CI.sizes.all, align=c("l","c","c"), digits=3)
+
+# LaTeX table for actuall CI for all plots:
+xtable(CI.table.full, align=c("l","c","c","c"), digits=3)
+
+
 ### Try calculating the influence of the 0.7 dp for Run 1. ###
 
 

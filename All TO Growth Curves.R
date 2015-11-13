@@ -395,8 +395,8 @@ var.test(slopes.100.max, slopes.1.max)  # p > 0.05; variances are not different
 t.test(slopes.100, slopes.1, alternative="greater")  # p = 8.6e-5; slopes after split-off are different
 
 # Slopes before split-off
-t.test(slopes.100.max, slopes.1.max)  # p = 0.8; slopes before split-off are not different 
-
+t.test(slopes.100.max, slopes.1.max, alternative="greater")  # p = 0.8; slopes before split-off are not different 
+                                                             # p = 0.6 is alt="greater" is used
 
 #==============
 # other t-tests
