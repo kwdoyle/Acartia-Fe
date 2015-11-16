@@ -324,6 +324,17 @@ legend("topleft", c("1 nM Fe", "100 nM Fe"), col=c("blue", "red"), lwd=2)
 
 
 
+
+#============================================================================================
+# Make a plot of averaging all the cell counts for each day from each culture for the replete
+# and deplete cultures so that I have one summary figure to show
+#============================================================================================
+
+
+
+
+
+
 # Maybe do plots like on p.92 of Ecological Stoichiometry for TO growth & do relative growth rates
 # So just calculate slops from points 1:3 and use them as the max growth rate.
 #=============================================
@@ -362,11 +373,12 @@ RGR.1 <- c(Feb28.1.r, Mar9.1.r, Mar13.1.r, Mar17.1.r, Mar21.1.r, Apr4.1.r, Apr8.
 
 
 # make a nicer table of these slopes to put in the paper. use xtable instead of Rmarkdown.
-TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
+#TO.slopes <- data.frame(slopes.100, se.100, slopes.1, se.1)
+TO.slopes <- data.frame(slopes.100.max, slopes.100, slopes.1.max, slopes.1)
 
 row.names(TO.slopes) <- c("Feb28", "Mar9", "Mar13", "Mar17", "Mar21", "Apr4", "Apr8", "Apr12",
                           "Apr28", "May2", "May6")
-colnames(TO.slopes) <- c("100 nM", "100 nM s.e.", "1 nM", "1 nM s.e.")
+colnames(TO.slopes) <- c("Fe-replete[b]", "Fe-replete[a]", "Fe-depleted[b]", "Fe-depleted[a]")
 
 
 
@@ -398,6 +410,15 @@ t.test(slopes.100, slopes.1, alternative="greater")  # p = 8.6e-5; slopes after 
 t.test(slopes.100.max, slopes.1.max, alternative="greater")  # p = 0.8; slopes before split-off are not different 
                                                              # p = 0.6 is alt="greater" is used
 
+# test if slopes before and after split-off are different for each treatment:
+# replete
+t.test(slopes.100.max, slopes.100)
+
+# deplete
+t.test(slopes.1.max, slopes.1)
+
+
+
 #==============
 # other t-tests
 #==============
@@ -417,8 +438,11 @@ library(xtable)
 # turn to scientific notation
 TO.table <- format(TO.slopes, digits=3, scientific=T)
 
+# column names
+#colnames(TO.table) <- c("Fe-replete", "Fe-replete s.e.", "Fe-depleted", "Fe-depleted s.e.")
+
 # generate LaTeX code for table
-print(xtable(TO.table))
+print(xtable(TO.table, align=c("l","c","c","c","c")))
 
 # table of RGRs
 RGR.table <- format(TO.RGR, digits=3, scientific=T)

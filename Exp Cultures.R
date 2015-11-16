@@ -51,6 +51,8 @@ colnames(exp15) <- c("time", "1nmFe", "100nmFe", "1nmDiameter", "100nmDiameter")
 
 
 #plot them
+
+# Try and make one big plot with all these plots on it (change par variable or something)
 plot(exp1$time, log(exp1$"100nmFe"), xlab="time (hours)", ylab="log(cells / mL)",
      main="Experiment Culture # 1", type="b", col="red")
 points(exp1$time, log(exp1$"1nmFe"), type="b", col="blue")

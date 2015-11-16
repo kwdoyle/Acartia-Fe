@@ -316,6 +316,64 @@ lines(Fe.ratios, LL, col="red", lty=2, lwd=2)
 # points.segmented adds the breakpoint on the plot
 points.segmented(seg.fit)
 
+
+
+# Davies' test for breakpoint significance:
+# for run 1 -- breakpoint is significant if you exclude 0.7 treatment
+no.treat.7 <- x3[-3]
+no.treat.7.eggs <- treat.means.1[-3]
+no.treat.7.fit <- lm(no.treat.7.eggs ~ no.treat.7)
+davies.test(no.treat.7.fit, seg.Z=~no.treat.7)
+
+# test is not significant when combining both runs
+davies.test(out.lm, seg.Z=~x)
+
+
+
+
+
+# try doing it the same was as TO growth
+after.bkpt <- coef(lm(treat.means[1:4] ~ Fe.ratios[1:4]))[2]
+before.bkpt <- coef(lm(treat.means[5:7] ~ Fe.ratios[5:7]))[2]
+
+after.bkpt.1 <- coef(lm(treat.means.1[1:4] ~ Fe.ratios[1:4]))[2]
+before.bkpt.1 <- coef(lm(treat.means.1[5:7] ~ Fe.ratios[5:7]))[2]
+
+after.bkpt.2 <- coef(lm(treat.means.2[1:4] ~ Fe.ratios[1:4]))[2]
+before.bkpt.2 <- coef(lm(treat.means.2[5:7] ~ Fe.ratios[5:7]))[2]
+
+# plot to check
+plot(Fe.ratios[1:4], treat.means[1:4])
+abline(38, 2.257)
+
+plot(Fe.ratios[5:7], treat.means[5:7])
+abline(14, 39)
+
+slopes.after <- c(after.bkpt, after.bkpt.1, after.bkpt.2)
+slopes.before <- c(before.bkpt, before.bkpt.1, before.bkpt.2)
+
+t.test(slopes.after, slopes.before)
+
+# uggggggggggghhhhhhhhhhhhhhhhhh
+# maybe bootstrap all the slopes.after and slopes.before??!?!?!?!?
+# do bootstrap on the egg counts for the combined runs to see if the breakpoint found for
+# the dist. of eggs per treatment I found is just by chance or not
+
+
+boot.eggs <- sample(treat.means, replace=F)
+#x <- Fe.ratios
+boot.lm <- lm(boot.eggs ~ Fe.ratios)
+boot.seg.fit <- try(segmented(boot.lm, seg.Z=~Fe.ratios, psi=list(Fe.ratios=c(0.6)),  # this finds the same ans when using any other breakpts
+                     control=seg.control(display=FALSE)), silent=T)
+plot(Fe.ratios, boot.eggs)
+plot(Fe.ratios, treat.means)
+
+
+
+
+
+
+
 # add legend maybe?
 # legend("topright", c("best fit", "CI", "break point"), col=c("red", "green", "black"), lty=c(1,2), lwd=2, pch=1, pt.cex=1.5)
 
@@ -372,6 +430,11 @@ FeC.0.6 <- Min + 0.6 * (Max - Min)
 FeC.0.4 <- Min + 0.4 * (Max - Min)
 FeC.0.2 <- Min + 0.2 * (Max - Min)
 FeC.0.0 <- Min + 0.0 * (Max - Min)
+
+# for run 1
+Min + summary(seg.fit.1)$psi[2] * (Max - Min)
+# for run 2
+Min + summary(seg.fit.2)$psi[2] * (Max - Min)
 
 # table of all treatment ratios and their respective Fe:C ratios
 FeC.table <- data.frame(row.names=c("1", "0.8", "0.7", "Brkpt", "0.6", "0.4", "0.2", "0.0"),
@@ -634,7 +697,7 @@ plot(all.treat.2, all.pts.2, pch=16, xlab="treatment", ylab="# of eggs",
      main="Sum of eggs across each well for each \n treatment for Run 2", ylim=c(0,100))  # make ylim be c(0,100) to match the plots from Run 1 and both runs
 lines(all.treat.2, seg.line.all.2$fit, col="red", lwd=2)
 
-# CIs
+# CIs ---- Take sqrt of egg counts to transform into normal
 UL.all.2 <- seg.line.all.2$fit + 1.96 * seg.line.all.2$se.fit
 LL.all.2 <- seg.line.all.2$fit - 1.96 * seg.line.all.2$se.fit
 
@@ -647,6 +710,15 @@ points.segmented(seg.fit.all.2)
 
 # check residuals
 plot(all.treat.2, residuals(seg.fit.all.2))
+
+
+
+
+
+#=========================================================
+# Try doing ML analysis to find the CI for the breakpoints
+#=========================================================
+
 
 
 
@@ -703,6 +775,8 @@ colnames(CI.sizes) <- c("break point", "CI size")
 
 # Also, Run 1's large CI is mostly due to the 0.7 dp. It otherwise looks very good.
 
+
+
 # table including plots using just means and all data points
 CI.sizes.all <- data.frame("break point"=c(bp.comb, bp.comb.all, bp.r1, bp.r1.all, bp.r2, bp.r2.all),
                            "CI size"=c(comb, comb.all, r1, r1.all, r2, r2.all))
@@ -719,7 +793,13 @@ row.names(CI.table.full) <- c("both runs", "both runs all", "run 1", "run 1 all"
 colnames(CI.table.full) <- c("break point", "CI lower", "CI upper")
 
 
+### table for plots for just means
+CI.table.full.2 <- data.frame("break point"=c(bp.comb, bp.r1, bp.r2),
+                            "CI lower"=c(comb_l, r1_l, r2_l),
+                            "CI upper"=c(comb_u, r1_u, r2_u))
 
+row.names(CI.table.full.2) <- c("both runs", "run 1", "run 2")
+colnames(CI.table.full.2) <- c("break point", "CI lower", "CI upper")
 
 
 
@@ -731,6 +811,9 @@ xtable(CI.sizes.all, align=c("l","c","c"), digits=3)
 
 # LaTeX table for actuall CI for all plots:
 xtable(CI.table.full, align=c("l","c","c","c"), digits=3)
+
+# table for actual CI for just plots using means
+xtable(CI.table.full.2, align=c("l","c","c","c"), digits=3)
 
 
 ### Try calculating the influence of the 0.7 dp for Run 1. ###
