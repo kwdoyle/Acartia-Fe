@@ -431,10 +431,26 @@ FeC.0.4 <- Min + 0.4 * (Max - Min)
 FeC.0.2 <- Min + 0.2 * (Max - Min)
 FeC.0.0 <- Min + 0.0 * (Max - Min)
 
+# brkpt for 1st run
+FeC.run.1 <- Min + summary(seg.fit.1)$psi[2] * (Max - Min)
+
+# brkpt for 2nd run
+FeC.run.2 <- Min + summary(seg.fit.2)$psi[2] * (Max - Min)
+
+
+
+# CIs:
+FeC.CI.l <- Min + confint.segmented(seg.fit)$x[2] * (Max - Min)
+FeC.CI.u <- Min + confint.segmented(seg.fit)$x[3] * (Max - Min)
+
 # for run 1
-Min + summary(seg.fit.1)$psi[2] * (Max - Min)
+FeC.CI.run.1.l <- Min + confint.segmented(seg.fit.1)$x[2] * (Max - Min)
+FeC.CI.run.1.u <- Min + confint.segmented(seg.fit.1)$x[3] * (Max - Min)
+
 # for run 2
-Min + summary(seg.fit.2)$psi[2] * (Max - Min)
+FeC.CI.run.2.l <- Min + confint.segmented(seg.fit.2)$x[2] * (Max - Min)
+FeC.CI.run.2.u <- Min + confint.segmented(seg.fit.2)$x[3] * (Max - Min)
+
 
 # table of all treatment ratios and their respective Fe:C ratios
 FeC.table <- data.frame(row.names=c("1", "0.8", "0.7", "Brkpt", "0.6", "0.4", "0.2", "0.0"),
@@ -793,6 +809,9 @@ row.names(CI.table.full) <- c("both runs", "both runs all", "run 1", "run 1 all"
 colnames(CI.table.full) <- c("break point", "CI lower", "CI upper")
 
 
+
+
+
 ### table for plots for just means
 CI.table.full.2 <- data.frame("break point"=c(bp.comb, bp.r1, bp.r2),
                             "CI lower"=c(comb_l, r1_l, r2_l),
@@ -801,6 +820,14 @@ CI.table.full.2 <- data.frame("break point"=c(bp.comb, bp.r1, bp.r2),
 row.names(CI.table.full.2) <- c("both runs", "run 1", "run 2")
 colnames(CI.table.full.2) <- c("break point", "CI lower", "CI upper")
 
+
+# table of actual FeC values and CIs
+CI.table.FeC <- data.frame("break point"=c(FeC.Break, FeC.run.1, FeC.run.2),
+                           "CI lower"=c(FeC.CI.l, FeC.CI.run.1.l, FeC.CI.run.2.l),
+                           "CI upper"=c(FeC.CI.u, FeC.CI.run.1.u, FeC.CI.run.2.u))
+
+row.names(CI.table.FeC) <- c("both runs", "run 1", "run 2")
+colnames(CI.table.FeC) <- c("break point", "CI lower", "CI upper")
 
 
 # LaTeX table for CI.sizes:
@@ -814,6 +841,9 @@ xtable(CI.table.full, align=c("l","c","c","c"), digits=3)
 
 # table for actual CI for just plots using means
 xtable(CI.table.full.2, align=c("l","c","c","c"), digits=3)
+
+# table for FeC CIs
+xtable(CI.table.FeC, align=c("l","c","c","c"), digits=3)
 
 
 ### Try calculating the influence of the 0.7 dp for Run 1. ###
