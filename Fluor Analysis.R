@@ -59,3 +59,10 @@ legend("topright", c("replete", "deplete"), col=c("red", "blue"), lwd=2, cex=1)
 
 # The decrease of Fm in the replete culture from 3/5 to 3/6 is due to the culture reaching stationary phase.
 # The earlier decrease of Fm for the deplete culture is presumably due to being Fe stressed.
+
+
+# all the higher Fm values (before they drop) are significantly different than the the lower ones (after they drop)
+t.test(c(values[1], values2[1:3]), c(values[2:4], values2[4]))
+
+# the Fv/Fm values grouped from the same days as the Fm t-test are not significantly different from one another
+t.test(c(values3[1], values4[1:3]), c(values3[2:4], values4[4]))
