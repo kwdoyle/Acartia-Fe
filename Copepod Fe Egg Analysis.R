@@ -307,7 +307,7 @@ lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
 
 # CIs
 UL <- seg.line$fit + 1.96 * seg.line$se.fit  # 1.96 = qnorm( 1-(0.05/2) )
-LL <- seg.line$fit - 1.96 * seg.line$se.fit  # ..we ARE assuming eggs are normally distributed, right?
+LL <- seg.line$fit - 1.96 * seg.line$se.fit  # eggs should be poisson distributed. but we may potentially analyze these in a bayesian framework anyway.
 
 # add to plot
 lines(Fe.ratios, UL, col="red", lty=2, lwd=2)
