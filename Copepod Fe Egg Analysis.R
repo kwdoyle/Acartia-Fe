@@ -305,6 +305,13 @@ plot(Fe.ratios, treat.means, ylim=c(0, 60), xlab="% replete Fe", ylab="mean # eg
      main="Effect of food Fe content on \n A. tonsa egg production", type="p", pch=16)
 lines(Fe.ratios, seg.line$fit, col="red", lwd=2)
 
+# Attempt at using ggplot
+# this just plots the fitted-line. Have to figure out how to also plot the actual points.
+ggplot(data.frame(seg.line$fit), aes(x=Fe.ratios, y=seg.line$fit)) + geom_line()
+
+# this would fit a linear model to the data and add confidence intervals
+# ggplot(data.frame(Fe.ratios), aes(x=Fe.ratios, y=treat.means)) + theme_bw() + geom_point() + geom_smooth(method="lm")
+
 # CIs
 UL <- seg.line$fit + 1.96 * seg.line$se.fit  # 1.96 = qnorm( 1-(0.05/2) )
 LL <- seg.line$fit - 1.96 * seg.line$se.fit  # eggs should be poisson distributed. but we may potentially analyze these in a bayesian framework anyway.
